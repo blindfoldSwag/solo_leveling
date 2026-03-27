@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <rect width="192" height="192" fill="#050911"/>
+  <rect x="8" y="8" width="176" height="176" fill="none" stroke="#4b6fff" stroke-width="2" opacity="0.6"/>
+  <rect x="16" y="16" width="160" height="160" fill="none" stroke="#7bc7ff" stroke-width="1" opacity="0.3"/>
+  <!-- S rank badge -->
+  <rect x="36" y="36" width="120" height="120" rx="4" fill="#0b1528" stroke="#5f8fff" stroke-width="1.5"/>
+  <!-- Crown / sword icon -->
+  <text x="96" y="116" font-family="serif" font-size="68" text-anchor="middle" fill="#5f8fff">⚔</text>
+  <!-- Bottom label -->
+  <rect x="36" y="148" width="120" height="28" rx="2" fill="#0a1835"/>
+  <text x="96" y="167" font-family="monospace" font-size="13" font-weight="bold" text-anchor="middle" fill="#7bc7ff" letter-spacing="3">SYSTEM</text>
+</svg>

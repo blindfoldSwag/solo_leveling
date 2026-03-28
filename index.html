@@ -1,0 +1,2806 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SL System">
+<meta name="theme-color" content="#050911">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Solo Leveling System</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#050911;--bg2:#0a1222;--panel:#0b1528;--panel2:#101d35;--line:rgba(88,128,198,.18);--line-strong:rgba(96,154,255,.36);--text:#d7e3fb;--muted:#7b93b8;--muted2:#536985;--aura:#5f8fff;--aura2:#7bc7ff;--gold:#ffd76b;--green:#49d99b;}
+body{background:
+radial-gradient(circle at 15% 20%,rgba(66,108,204,.14),transparent 28%),
+radial-gradient(circle at 85% 12%,rgba(112,155,255,.08),transparent 24%),
+linear-gradient(180deg,#04070d,#08101c 40%,#050911 100%);
+color:var(--text);font-family:'Rajdhani',sans-serif;min-height:100vh;}
+.scan{position:fixed;top:0;left:0;right:0;bottom:0;background:
+linear-gradient(180deg,rgba(130,170,255,.03),transparent 28%),
+repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:999;}
+.wrap{max-width:920px;margin:0 auto;padding:14px;}
+.sys-bar{background:linear-gradient(135deg,rgba(12,24,46,.92),rgba(7,13,26,.96));border:1px solid var(--line-strong);border-left:3px solid var(--aura2);padding:10px 16px;margin-bottom:12px;box-shadow:0 8px 28px rgba(4,10,22,.26);}
+.sys-bar-t{font-family:'Orbitron',monospace;font-size:9px;color:var(--aura2);letter-spacing:3px;}
+.sys-bar-m{font-size:14px;color:#acc0e4;margin-top:2px;}
+.pcard{background:linear-gradient(135deg,rgba(12,22,44,.96),rgba(7,12,24,.98));border:1px solid rgba(94,140,220,.18);padding:18px;margin-bottom:12px;position:relative;overflow:hidden;box-shadow:0 14px 32px rgba(3,8,18,.34);}
+.pcard::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--aura),var(--aura2),transparent);}
+.pcard-top{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+.avatar{width:56px;height:56px;background:linear-gradient(135deg,#10182e,#172a58);border:2px solid #4b6fff;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;position:relative;overflow:hidden;}
+.avatar::after{content:'';position:absolute;inset:-4px;border:1px solid rgba(104,158,255,.22);animation:pb 2.5s ease-in-out infinite;}
+.avatar img{width:100%;height:100%;object-fit:cover;display:block;}
+.avatar-fallback{position:relative;z-index:1;}
+@keyframes pb{0%,100%{opacity:.2}50%{opacity:.8}}
+.pinfo{flex:1;}.pname{font-family:'Orbitron',monospace;font-size:16px;font-weight:900;color:#e8f0ff;letter-spacing:2px;}
+.pclass{font-size:11px;color:var(--aura2);letter-spacing:3px;font-weight:600;margin-top:1px;}
+.ptitle{font-size:10px;color:var(--gold);letter-spacing:2px;margin-top:2px;}
+.prank{font-family:'Orbitron',monospace;font-size:32px;font-weight:900;color:var(--aura2);text-shadow:0 0 24px rgba(95,143,255,.42);}
+.xph{display:flex;justify-content:space-between;margin-bottom:5px;}
+.xpl{font-size:10px;color:var(--muted);letter-spacing:2px;}.xpv{font-family:'Orbitron',monospace;font-size:10px;color:var(--aura2);}
+.xpbg{height:7px;background:rgba(255,255,255,0.04);border:1px solid var(--line);overflow:hidden;}
+.xpfill{height:100%;background:linear-gradient(90deg,#346dff,#5f8fff,#86d4ff);transition:width .9s cubic-bezier(.4,0,.2,1);position:relative;}
+.xpfill::after{content:'';position:absolute;top:0;right:0;bottom:0;width:24px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35));animation:xs 2s ease-in-out infinite;}
+@keyframes xs{0%,100%{opacity:0}50%{opacity:1}}
+.total-xp{font-family:'Orbitron',monospace;font-size:9px;color:var(--muted2);margin-top:4px;text-align:right;letter-spacing:1px;}
+.sgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:12px;}
+.sbox{background:linear-gradient(180deg,rgba(11,20,38,.9),rgba(7,12,25,.94));border:1px solid var(--line);padding:9px 6px;text-align:center;position:relative;cursor:pointer;transition:border-color .2s,transform .2s ease,box-shadow .2s ease;box-shadow:inset 0 1px 0 rgba(255,255,255,.02);}
+.sbox:hover{border-color:rgba(112,164,255,.34);transform:translateY(-1px);box-shadow:0 10px 18px rgba(3,8,18,.22);}
+.sbox::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.sbox.str::before{background:linear-gradient(90deg,#ff6b35,#ff4500);}
+.sbox.int::before{background:linear-gradient(90deg,#3070ff,#00aaff);}
+.sbox.vit::before{background:linear-gradient(90deg,#00e676,#00b248);}
+.sbox.con::before{background:linear-gradient(90deg,#ff1744,#d500f9);}
+.sbox.dis::before{background:linear-gradient(90deg,#ffd740,#ff9100);}
+.sico{font-size:16px;margin-bottom:2px;}.snm{font-size:7px;letter-spacing:2px;color:var(--muted);font-weight:700;margin-bottom:2px;}
+.sval{font-family:'Orbitron',monospace;font-size:18px;font-weight:700;}
+.sbox.str .sval{color:#ff6b35;}.sbox.int .sval{color:#3070ff;}.sbox.vit .sval{color:#00e676;}.sbox.con .sval{color:#ff1744;}.sbox.dis .sval{color:#ffd740;}
+.sbar{height:3px;background:rgba(255,255,255,0.04);margin-top:4px;overflow:hidden;}
+.sbarfill{height:100%;transition:width 1s ease;}
+.sbox.str .sbarfill{background:#ff6b35;}.sbox.int .sbarfill{background:#3070ff;}.sbox.vit .sbarfill{background:#00e676;}.sbox.con .sbarfill{background:#ff1744;}.sbox.dis .sbarfill{background:#ffd740;}
+.sbadge{font-size:8px;margin-top:3px;color:#ffd740;font-weight:700;min-height:10px;}
+.strend{font-size:8px;color:#88a8d6;margin-top:2px;min-height:10px;letter-spacing:1px;}
+.sdecay{font-size:7px;color:#ff4444;margin-top:1px;}
+.tabs{display:flex;gap:8px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px;}
+.tab{padding:8px 12px;font-size:10px;letter-spacing:2px;color:var(--muted);cursor:pointer;font-weight:700;border:1px solid transparent;transition:all .2s;font-family:'Rajdhani',sans-serif;white-space:nowrap;background:rgba(10,18,34,.62);}
+.tab.on{color:#d8e6ff;border-color:rgba(104,158,255,.3);background:linear-gradient(180deg,rgba(18,33,58,.9),rgba(10,18,32,.9));box-shadow:inset 0 1px 0 rgba(120,172,255,.12),0 0 18px rgba(43,82,164,.18);}
+.tab:hover:not(.on){color:#a7bfe4;border-color:rgba(88,128,198,.18);}
+.tsec{display:none;}.tsec.on{display:block;}
+.qcat{margin-bottom:14px;}
+.qcath{display:flex;align-items:center;gap:8px;margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid rgba(70,110,255,0.08);}
+.qcatn{font-size:13px;letter-spacing:3px;font-weight:700;}.qcatx{margin-left:auto;font-family:'Orbitron',monospace;font-size:9px;color:#3a5080;}
+.qcat-toggle{background:none;border:1px solid rgba(88,128,198,.14);color:#8eabd0;padding:3px 7px;font-family:'Orbitron',monospace;font-size:8px;letter-spacing:1px;cursor:pointer;}
+.qdrag{width:18px;height:22px;border:1px solid rgba(88,128,198,.14);background:rgba(12,22,40,.46);color:#7f99bb;display:flex;align-items:center;justify-content:center;cursor:grab;flex-shrink:0;font-size:10px;}
+.qdrag:active{cursor:grabbing;}
+.qi.drag-over{border-color:rgba(104,158,255,.38);box-shadow:0 0 0 1px rgba(104,158,255,.22) inset;}
+.qi{background:linear-gradient(180deg,rgba(10,18,38,.72),rgba(8,14,28,.82));border:1px solid rgba(88,128,198,.12);padding:9px 12px;margin-bottom:5px;display:flex;align-items:center;gap:10px;transition:all .2s;position:relative;}
+.qi:hover{border-color:rgba(105,154,255,.3);background:linear-gradient(180deg,rgba(14,26,52,.84),rgba(9,16,30,.9));cursor:pointer;box-shadow:0 12px 20px rgba(3,8,18,.22);}
+.qi.min{border-left:2px solid #ffd740;}.qi.full{border-left:2px solid #00e676;}
+.qchk{width:20px;height:20px;border:1.5px solid rgba(70,110,255,.35);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;}
+.qi.min .qchk{border-color:#ffd740;background:rgba(255,215,64,.12);color:#ffd740;}
+.qi.full .qchk{border-color:#00e676;background:rgba(0,230,118,.12);color:#00e676;}
+.qcon{flex:1;min-width:0;}.qname{font-size:13px;font-weight:600;color:#c8d6f0;}
+.qdesc{font-size:10px;color:#3a5070;margin-top:1px;}
+.qright{text-align:right;flex-shrink:0;}.qxp{font-family:'Orbitron',monospace;font-size:10px;color:var(--aura2);}
+.qstreak{font-size:9px;color:#ffd740;margin-top:2px;}.qmult{font-size:9px;color:#00e676;}
+.qty-row{display:flex;align-items:center;gap:6px;margin-top:5px;}
+.qty-btn{width:22px;height:22px;background:rgba(70,126,255,.14);border:1px solid rgba(104,158,255,.26);color:#cfe0ff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.qty-val{font-family:'Orbitron',monospace;font-size:12px;color:#e8f0ff;min-width:20px;text-align:center;}
+.qty-label{font-size:10px;color:#3a5070;}
+.xp-scaled{font-size:8px;color:#5a8060;font-family:'Orbitron',monospace;margin-top:1px;letter-spacing:1px;}
+.retire-btn{font-size:9px;color:#6f86a6;background:none;border:1px solid rgba(88,128,198,.12);padding:2px 7px;cursor:pointer;font-family:'Rajdhani',sans-serif;letter-spacing:1px;margin-top:3px;display:inline-block;}
+.retire-btn:hover{border-color:rgba(110,164,255,.28);color:#cfe0ff;}
+.edit-btn{font-size:9px;color:#89a4cb;background:none;border:1px solid rgba(88,128,198,.12);padding:2px 7px;cursor:pointer;font-family:'Rajdhani',sans-serif;letter-spacing:1px;margin-top:3px;display:inline-block;margin-left:6px;}
+.edit-btn:hover{border-color:rgba(110,164,255,.28);color:#e6f0ff;}
+.qtier{font-family:'Orbitron',monospace;font-size:9px;font-weight:900;padding:1px 5px;border:1px solid;margin-right:4px;letter-spacing:1px;display:inline-block;vertical-align:middle;}
+.qtier-D{color:#4a9a4a;border-color:#4a9a4a;background:rgba(74,154,74,.08);}
+.qtier-C{color:#4a70ff;border-color:#4a70ff;background:rgba(74,112,255,.08);}
+.qtier-B{color:#aa60ff;border-color:#aa60ff;background:rgba(170,96,255,.08);}
+.qtier-A{color:#ffaa20;border-color:#ffaa20;background:rgba(255,170,32,.08);}
+.qtier-S{color:#ff4060;border-color:#ff4060;background:rgba(255,64,96,.08);text-shadow:0 0 6px rgba(255,64,96,.4);}
+.tier-info{background:linear-gradient(135deg,rgba(12,22,44,.9),rgba(7,13,26,.95));border:1px solid var(--line);padding:9px 12px;margin-bottom:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;box-shadow:0 10px 24px rgba(3,8,18,.18);}
+.tier-info-item{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:1px;}
+.dash-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:10px;margin-bottom:12px;}
+.dash-card{background:linear-gradient(135deg,rgba(10,18,40,.95),rgba(7,12,24,.98));border:1px solid var(--line);padding:12px;position:relative;overflow:hidden;box-shadow:0 14px 28px rgba(3,8,18,.24);}
+.dash-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--aura),var(--aura2),transparent);}
+.dash-title{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:2px;color:var(--aura2);margin-bottom:10px;}
+.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;}
+.summary-box{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid rgba(88,128,198,.1);padding:9px 8px;}
+.summary-k{font-size:8px;letter-spacing:2px;color:#425878;margin-bottom:5px;}
+.summary-v{font-family:'Orbitron',monospace;font-size:18px;color:#e8f0ff;}
+.summary-sub{font-size:9px;color:#587090;margin-top:4px;}
+.summary-bar{height:6px;background:rgba(255,255,255,.04);border:1px solid rgba(70,110,255,.12);overflow:hidden;margin-top:10px;}
+.summary-fill{height:100%;background:linear-gradient(90deg,#3770ff,#66a8ff,#4be3a0);}
+.insight-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;}
+.insight-box{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid rgba(88,128,198,.1);padding:9px 8px;}
+.insight-k{font-size:8px;letter-spacing:2px;color:#425878;margin-bottom:5px;}
+.insight-v{font-family:'Orbitron',monospace;font-size:15px;color:#e8f0ff;}
+.insight-sub{font-size:9px;color:#587090;margin-top:4px;line-height:1.4;}
+.radar-card{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid rgba(88,128,198,.1);padding:12px 10px;margin-bottom:10px;}
+.radar-wrap{display:grid;grid-template-columns:220px 1fr;gap:12px;align-items:center;}
+.radar-svg{width:100%;height:auto;display:block;}
+.radar-legend{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.radar-item{background:rgba(12,22,40,.34);border:1px solid rgba(88,128,198,.1);padding:8px;}
+.radar-name{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:1px;color:#aecdff;}
+.radar-val{font-family:'Orbitron',monospace;font-size:14px;color:#e8f0ff;margin-top:4px;}
+.radar-sub{font-size:9px;color:#6e89ad;margin-top:2px;}
+.note-area{width:100%;min-height:86px;resize:vertical;background:rgba(255,255,255,.04);border:1px solid rgba(88,128,198,.18);color:var(--text);padding:10px;font-family:'Rajdhani',sans-serif;font-size:12px;}
+.note-area:focus{outline:none;border-color:var(--aura2);box-shadow:0 0 0 3px rgba(96,184,255,.08);}
+.note-chips{display:flex;gap:6px;flex-wrap:wrap;margin:9px 0;}
+.note-chip{padding:5px 8px;border:1px solid rgba(88,128,198,.16);background:rgba(12,22,40,.42);color:#8ea9cc;font-family:'Orbitron',monospace;font-size:8px;letter-spacing:1px;cursor:pointer;}
+.note-actions{display:flex;justify-content:space-between;align-items:center;gap:8px;}
+.note-meta{font-size:9px;color:#587090;}
+.today-focus{margin-bottom:12px;}
+.dash-card .today-focus{margin-top:12px;margin-bottom:0;}
+.focus-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px;}
+.focus-title{font-family:'Orbitron',monospace;font-size:10px;letter-spacing:2px;color:var(--aura2);}
+.focus-meta{font-size:10px;color:var(--muted);}
+.focus-filters{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:10px;}
+.focus-chip{padding:5px 8px;border:1px solid rgba(88,128,198,.16);background:rgba(12,22,40,.42);color:#8ea9cc;font-family:'Orbitron',monospace;font-size:8px;letter-spacing:1px;cursor:pointer;}
+.focus-chip.on{border-color:rgba(104,158,255,.34);color:#e6f0ff;background:rgba(20,36,64,.88);}
+.focus-chip.overdue.on{border-color:rgba(255,122,122,.34);color:#ffd3d3;background:rgba(68,18,24,.46);}
+.focus-select{background:#07101d;border:1px solid rgba(88,128,198,.18);color:var(--text);padding:6px 8px;font-family:'Orbitron',monospace;font-size:8px;letter-spacing:1px;}
+.focus-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+.focus-grid.vertical{grid-template-columns:1fr;max-height:420px;overflow-y:auto;padding-right:4px;scrollbar-width:thin;scrollbar-color:rgba(104,158,255,.28) rgba(10,18,34,.42);}
+.focus-grid.vertical::-webkit-scrollbar{width:8px;}
+.focus-grid.vertical::-webkit-scrollbar-track{background:rgba(10,18,34,.42);border-radius:999px;}
+.focus-grid.vertical::-webkit-scrollbar-thumb{background:linear-gradient(180deg,rgba(88,128,198,.38),rgba(58,92,154,.42));border-radius:999px;border:1px solid rgba(104,158,255,.12);}
+.focus-card{background:linear-gradient(180deg,rgba(12,22,42,.88),rgba(7,12,24,.96));border:1px solid rgba(88,128,198,.14);padding:12px;position:relative;}
+.focus-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:8px;}
+.focus-name{font-size:14px;font-weight:700;color:#edf4ff;}
+.focus-desc{font-size:10px;color:#7e97ba;line-height:1.4;}
+.focus-xp{font-family:'Orbitron',monospace;font-size:10px;color:var(--gold);}
+.focus-action{margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.focus-btn{background:rgba(70,126,255,.14);border:1px solid rgba(104,158,255,.26);color:#d8e6ff;padding:8px 12px;font-family:'Orbitron',monospace;font-size:9px;letter-spacing:1px;cursor:pointer;}
+.focus-btn.alt{background:rgba(255,255,255,.03);border-color:rgba(88,128,198,.14);color:#8ea9cc;}
+.focus-empty{background:linear-gradient(180deg,rgba(12,22,42,.78),rgba(7,12,24,.92));border:1px solid rgba(88,128,198,.1);padding:14px;font-size:11px;color:#90a8ca;}
+.quest-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;}
+.quest-toggle{background:rgba(12,22,40,.72);border:1px solid rgba(88,128,198,.18);color:#aecdff;padding:6px 10px;font-family:'Orbitron',monospace;font-size:8px;letter-spacing:1px;cursor:pointer;}
+.quest-toggle.on{border-color:rgba(104,158,255,.34);color:#e6f0ff;background:rgba(20,36,64,.88);}
+.priority-tag{display:inline-block;font-family:'Orbitron',monospace;font-size:8px;letter-spacing:1px;padding:2px 5px;border:1px solid;margin-left:6px;vertical-align:middle;}
+.priority-critical{color:#ffd76b;border-color:rgba(255,215,107,.4);background:rgba(54,42,10,.4);}
+.priority-high{color:#64f0bc;border-color:rgba(100,240,188,.34);background:rgba(8,44,30,.34);}
+.priority-normal{color:#8db2da;border-color:rgba(96,184,255,.2);background:rgba(12,22,40,.3);}
+.overdue-tag{display:inline-block;font-family:'Orbitron',monospace;font-size:8px;letter-spacing:1px;padding:2px 5px;border:1px solid rgba(255,122,122,.34);margin-left:6px;vertical-align:middle;color:#ffb0b0;background:rgba(68,18,24,.36);}
+.slot-tag{display:inline-block;font-family:'Orbitron',monospace;font-size:8px;letter-spacing:1px;margin-left:6px;vertical-align:middle;color:#9fb3d6;}
+.category-tag{display:inline-block;font-family:'Orbitron',monospace;font-size:8px;letter-spacing:1px;padding:2px 5px;border:1px solid rgba(96,184,255,.18);margin-left:6px;vertical-align:middle;color:#d8e6ff;background:rgba(12,22,40,.3);}
+.focus-slot-divider{display:flex;align-items:center;gap:8px;margin:4px 0 2px;}
+.focus-slot-divider::after{content:'';flex:1;height:1px;background:rgba(88,128,198,.12);}
+.focus-slot-label{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:2px;color:#8ea9cc;}
+.day-chips{display:flex;gap:5px;flex-wrap:wrap;}
+.day-chip{padding:4px 7px;border:1px solid rgba(88,128,198,.16);background:rgba(12,22,40,.42);color:#7f99bb;font-family:'Orbitron',monospace;font-size:8px;letter-spacing:1px;cursor:pointer;}
+.day-chip.on{border-color:rgba(104,158,255,.32);color:#dce9ff;background:rgba(20,36,64,.84);}
+.priority-rail{display:flex;gap:4px;margin-top:7px;}
+.priority-pill{padding:3px 7px;border:1px solid rgba(88,128,198,.14);background:rgba(12,22,40,.42);color:#7089ad;font-family:'Orbitron',monospace;font-size:7px;letter-spacing:1px;cursor:pointer;}
+.priority-pill.on-high{border-color:rgba(100,240,188,.34);color:#64f0bc;background:rgba(8,44,30,.34);}
+.priority-pill.on-critical{border-color:rgba(255,215,107,.4);color:#ffd76b;background:rgba(54,42,10,.4);}
+.priority-pill.on-normal{border-color:rgba(96,184,255,.24);color:#a5c3e7;background:rgba(12,22,40,.58);}
+.edit-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:6050;align-items:center;justify-content:center;padding:16px;}
+.edit-modal.show{display:flex;}
+.edit-inner{background:linear-gradient(135deg,rgba(10,18,42,.99),rgba(6,10,24,.99));border:1px solid rgba(104,158,255,.28);padding:22px;max-width:460px;width:100%;position:relative;max-height:90vh;overflow-y:auto;}
+.edit-inner::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--aura),var(--aura2),transparent);}
+.edit-title{font-family:'Orbitron',monospace;font-size:13px;font-weight:900;color:#dbe8ff;letter-spacing:2px;margin-bottom:4px;}
+.edit-sub{font-size:11px;color:#6b84a7;letter-spacing:1px;margin-bottom:14px;}
+.edit-actions{display:flex;gap:8px;margin-top:14px;}
+.edit-save-btn{flex:1;background:linear-gradient(135deg,#305dce,#5f8fff,#82d2ff);border:none;color:#fff;padding:9px;font-family:'Orbitron',monospace;font-size:9px;letter-spacing:1px;cursor:pointer;font-weight:700;}
+.history-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px;}
+.history-meta{font-size:9px;color:#4d6386;letter-spacing:1px;}
+.history-head-right{display:flex;align-items:center;gap:8px;}
+.history-toggle{background:rgba(12,22,40,.72);border:1px solid rgba(88,128,198,.18);color:#aecdff;padding:5px 8px;font-family:'Orbitron',monospace;font-size:8px;letter-spacing:1px;cursor:pointer;}
+.history-toggle:hover{border-color:rgba(104,158,255,.32);color:#dce9ff;}
+.history-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
+.history-day{background:linear-gradient(180deg,rgba(10,20,42,.58),rgba(8,14,28,.44));border:1px solid rgba(72,102,165,.18);min-height:54px;padding:6px 4px;display:flex;flex-direction:column;justify-content:space-between;transition:transform .16s ease,border-color .16s ease,background .16s ease,box-shadow .16s ease;position:relative;overflow:hidden;}
+.history-day.dim{opacity:.38;}
+.history-day.today{box-shadow:inset 0 0 0 1px rgba(126,182,255,.28),0 0 18px rgba(34,82,160,.18);}
+.history-day:hover{transform:translateY(-1px);border-color:rgba(102,146,224,.3);}
+.history-day::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:rgba(72,102,165,.18);}
+.history-day.state-none::before{background:rgba(72,102,165,.18);}
+.history-day.state-progress::before{background:linear-gradient(90deg,#4c7dff,#60b8ff);}
+.history-day.state-strong::before{background:linear-gradient(90deg,#2bd88f,#62f0b8);}
+.history-day.state-perfect::before{background:linear-gradient(90deg,#ffd76b,#fff0a8);}
+.history-day.monarch{background:linear-gradient(180deg,rgba(31,16,52,.86),rgba(11,8,24,.94));border:1px solid rgba(152,104,255,.26);box-shadow:inset 0 0 0 1px rgba(152,104,255,.08),0 10px 24px rgba(16,8,32,.22);}
+.history-day.monarch::before{background:linear-gradient(90deg,#6c42d8,#a66bff,#d6b3ff);}
+.history-day.monarch .history-dow{color:#bca8ee;}
+.history-day.monarch .history-num{color:#f2ecff;}
+.history-day.monarch .history-xp{color:#d9c2ff;}
+.history-day.monarch .history-rate{color:#b7a7d8;}
+.history-dow{font-family:'Orbitron',monospace;font-size:7px;color:#3a5080;letter-spacing:1px;}
+.history-num{font-family:'Orbitron',monospace;font-size:13px;color:#dbe7ff;}
+.history-xp{font-size:8px;color:#8aa4ca;}
+.history-rate{font-size:8px;color:#a8bdd8;}
+.history-legend{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.legend-chip{font-size:8px;color:#6c84a6;letter-spacing:1px;padding:2px 6px;border:1px solid rgba(70,110,255,.08);background:rgba(14,22,40,.55);}
+.history-empty{font-size:10px;color:#465d80;line-height:1.5;}
+.profile-panel{background:linear-gradient(135deg,rgba(10,18,42,.9),rgba(7,12,28,.96));border:1px solid rgba(70,110,255,.14);padding:16px;position:relative;overflow:hidden;}
+.profile-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--aura),var(--aura2),transparent);}
+.profile-grid{display:grid;grid-template-columns:120px 1fr;gap:14px;align-items:start;}
+.profile-avatar-lg{width:120px;height:120px;border:2px solid rgba(75,111,255,.55);background:linear-gradient(135deg,#10182e,#172a58);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;box-shadow:0 0 28px rgba(40,88,180,.18);}
+.profile-avatar-lg img{width:100%;height:100%;object-fit:cover;display:block;}
+.profile-avatar-fallback{font-size:40px;color:#cfe0ff;}
+.profile-title{font-family:'Orbitron',monospace;font-size:12px;letter-spacing:2px;color:#dfe9ff;margin-bottom:4px;}
+.profile-sub{font-size:10px;color:#6780a4;letter-spacing:1px;margin-bottom:12px;}
+.profile-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.profile-btn{background:rgba(64,128,255,.12);border:1px solid rgba(75,111,255,.26);color:#aecdff;padding:8px 12px;font-family:'Orbitron',monospace;font-size:9px;letter-spacing:1px;cursor:pointer;}
+.profile-btn.alt{background:none;border-color:rgba(70,110,255,.15);color:#5e7498;}
+.profile-note{font-size:10px;color:#5f779a;line-height:1.5;margin-top:10px;}
+.tier-sel{display:flex;gap:5px;margin-bottom:8px;}
+.tier-opt{flex:1;padding:6px 4px;text-align:center;border:1px solid rgba(70,110,255,.15);background:rgba(8,16,38,.8);cursor:pointer;font-family:'Orbitron',monospace;font-size:10px;font-weight:700;letter-spacing:1px;transition:all .2s;color:#3a5080;}
+.tier-opt:hover{border-color:rgba(104,158,255,.34);}
+.tier-opt.sel-D{border-color:#4a9a4a;background:rgba(74,154,74,.12);color:#4a9a4a;}
+.tier-opt.sel-C{border-color:#4a70ff;background:rgba(74,112,255,.12);color:#4a70ff;}
+.tier-opt.sel-B{border-color:#aa60ff;background:rgba(170,96,255,.12);color:#aa60ff;}
+.tier-opt.sel-A{border-color:#ffaa20;background:rgba(255,170,32,.12);color:#ffaa20;}
+.tier-opt.sel-S{border-color:#ff4060;background:rgba(255,64,96,.15);color:#ff4060;text-shadow:0 0 8px rgba(255,64,96,.5);}
+.tier-hint{font-size:10px;color:#3a5080;margin-bottom:8px;font-style:italic;}
+.stat-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:5000;align-items:center;justify-content:center;}
+.stat-modal.show{display:flex;}
+.stat-modal-inner{background:linear-gradient(135deg,rgba(10,18,42,.99),rgba(6,10,24,.99));border:1px solid rgba(104,158,255,.34);padding:24px;max-width:420px;width:90%;position:relative;}
+.stat-modal-inner::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--aura),var(--aura2),transparent);}
+.smo-close{position:absolute;top:10px;right:14px;color:#3a5080;cursor:pointer;font-size:18px;font-family:'Orbitron',monospace;}
+.smo-title{font-family:'Orbitron',monospace;font-size:18px;font-weight:900;margin-bottom:4px;}
+.smo-subtitle{font-size:11px;color:#5a7ab0;letter-spacing:2px;margin-bottom:14px;}
+.smo-val{font-family:'Orbitron',monospace;font-size:40px;font-weight:900;margin-bottom:8px;}
+.smo-bar-bg{height:10px;background:rgba(255,255,255,.04);border:1px solid rgba(70,110,255,.15);overflow:hidden;margin-bottom:12px;}
+.smo-bar-fill{height:100%;transition:width 1s ease;}
+.smo-next{font-size:11px;color:#4a6080;margin-bottom:14px;}
+.smo-milestones{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+.smo-ms{background:rgba(255,255,255,.03);border:1px solid rgba(70,110,255,.1);padding:8px 6px;text-align:center;}
+.smo-ms.reached{border-color:rgba(255,215,64,.4);background:rgba(40,30,5,.4);}
+.smo-ms-val{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;color:#3a5080;}
+.smo-ms.reached .smo-ms-val{color:#ffd740;}
+.smo-ms-title{font-size:9px;color:#2a3a58;margin-top:3px;letter-spacing:1px;}
+.smo-ms.reached .smo-ms-title{color:#806030;}
+.smo-ms-badge{font-size:14px;margin-bottom:2px;}
+.decay-warn{background:rgba(255,50,50,.08);border:1px solid rgba(255,50,50,.2);padding:8px 10px;font-size:11px;color:#ff6060;margin-top:10px;}
+.retire-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:6000;align-items:center;justify-content:center;padding:16px;}
+.retire-modal.show{display:flex;}
+.retire-inner{background:linear-gradient(135deg,rgba(10,18,42,.99),rgba(6,10,24,.99));border:1px solid rgba(255,80,80,.3);padding:22px;max-width:440px;width:100%;position:relative;max-height:90vh;overflow-y:auto;}
+.retire-inner::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#ff4060,transparent);}
+.retire-title{font-family:'Orbitron',monospace;font-size:13px;font-weight:900;color:#ff6080;letter-spacing:2px;margin-bottom:4px;}
+.retire-sub{font-size:11px;color:#5a4060;letter-spacing:1px;margin-bottom:14px;}
+.retire-old{background:rgba(255,50,80,.06);border:1px solid rgba(255,50,80,.15);padding:10px 12px;margin-bottom:14px;}
+.retire-old-name{font-size:14px;font-weight:700;color:#ff8090;margin-bottom:2px;}
+.retire-old-meta{font-size:10px;color:#4a3050;letter-spacing:1px;}
+.retire-divider{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.retire-divider-line{flex:1;height:1px;background:rgba(70,110,255,.12);}
+.retire-divider-txt{font-family:'Orbitron',monospace;font-size:8px;color:#3a5080;letter-spacing:2px;}
+.retire-actions{display:flex;gap:8px;margin-top:14px;}
+.retire-confirm-btn{flex:1;background:rgba(255,50,80,.12);border:1px solid rgba(255,50,80,.3);color:#ff6080;padding:9px;font-family:'Orbitron',monospace;font-size:9px;letter-spacing:1px;cursor:pointer;font-weight:700;}
+.retire-confirm-btn:hover{background:rgba(255,50,80,.22);}
+.retire-replace-btn{flex:2;background:linear-gradient(135deg,rgba(44,86,188,.56),rgba(82,142,255,.4));border:1px solid rgba(104,158,255,.34);color:#d8e6ff;padding:9px;font-family:'Orbitron',monospace;font-size:9px;letter-spacing:1px;cursor:pointer;font-weight:700;}
+.retire-replace-btn:hover{background:linear-gradient(135deg,rgba(60,60,180,.6),rgba(140,90,255,.5));}
+.retire-cancel-btn{background:none;border:1px solid rgba(70,110,255,.15);color:#3a5080;padding:9px 14px;font-family:'Orbitron',monospace;font-size:9px;cursor:pointer;}
+.retire-cancel-btn:hover{border-color:rgba(70,110,255,.35);color:#6080a0;}
+.bq{background:linear-gradient(135deg,rgba(15,26,54,.86),rgba(8,14,28,.94));border:1px solid rgba(98,148,228,.24);padding:12px 14px;margin-bottom:12px;position:relative;overflow:hidden;cursor:pointer;box-shadow:0 14px 26px rgba(3,8,18,.24);}
+.bq::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--aura2),transparent);}
+.bqt{font-family:'Orbitron',monospace;font-size:9px;color:var(--aura2);letter-spacing:3px;margin-bottom:6px;}
+.bqname{font-size:15px;font-weight:700;color:#e4efff;margin-bottom:2px;}.bqdesc{font-size:11px;color:#7f99bb;}
+.bqxp{font-family:'Orbitron',monospace;font-size:13px;color:var(--gold);margin-top:6px;}.bqdone{opacity:.4;cursor:default;}
+.boss{background:linear-gradient(135deg,rgba(12,24,48,.92),rgba(7,12,24,.98));border:1px solid rgba(98,148,228,.22);padding:14px;margin-bottom:12px;position:relative;box-shadow:0 14px 28px rgba(3,8,18,.28);}
+.boss::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--aura),var(--gold),transparent);}
+.bosst{font-family:'Orbitron',monospace;font-size:9px;color:var(--aura2);letter-spacing:3px;margin-bottom:6px;}
+.bossname{font-size:16px;font-weight:700;color:#e7f0ff;margin-bottom:4px;}.bossdesc{font-size:11px;color:#7b94b7;margin-bottom:8px;}
+.bosshpbg{height:10px;background:rgba(255,255,255,.04);border:1px solid rgba(98,148,228,.18);overflow:hidden;margin-bottom:6px;}
+.bosshpfill{height:100%;background:linear-gradient(90deg,#4477ff,#72beff,#ffd76b);transition:width .6s ease;}
+.bosshptxt{display:flex;justify-content:space-between;font-size:10px;color:#7b94b7;margin-bottom:8px;}
+.boss-reward{font-family:'Orbitron',monospace;font-size:11px;color:#ffd740;}
+.boss-dmg-btn{margin-top:10px;background:rgba(70,126,255,.14);border:1px solid rgba(104,158,255,.28);color:#d8e6ff;padding:7px 16px;font-family:'Rajdhani',sans-serif;font-size:12px;letter-spacing:2px;cursor:pointer;font-weight:700;}
+.ach-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+.ach{background:linear-gradient(180deg,rgba(10,18,38,.74),rgba(8,14,28,.84));border:1px solid rgba(88,128,198,.1);padding:10px 12px;display:flex;align-items:center;gap:10px;}
+.ach.unlocked{border-color:rgba(255,215,107,.28);background:linear-gradient(180deg,rgba(26,24,22,.76),rgba(15,13,12,.88));}
+.ach-ico{font-size:22px;flex-shrink:0;filter:grayscale(1);opacity:.3;}.ach.unlocked .ach-ico{filter:none;opacity:1;}
+.ach-name{font-size:13px;font-weight:700;color:#3a5080;}.ach.unlocked .ach-name{color:#ffd740;}
+.ach-desc{font-size:10px;color:#2a3a58;}.ach.unlocked .ach-desc{color:#806030;}
+.ach-xp{font-family:'Orbitron',monospace;font-size:10px;color:#3a5080;margin-left:auto;flex-shrink:0;}.ach.unlocked .ach-xp{color:#ffd740;}
+.addbtn{width:100%;padding:9px;background:rgba(70,126,255,.08);border:1px dashed rgba(104,158,255,.26);color:#a9c5ff;font-family:'Rajdhani',sans-serif;font-size:12px;letter-spacing:2px;cursor:pointer;font-weight:700;margin-top:10px;}
+.addbtn:hover{background:rgba(70,126,255,.14);border-color:rgba(104,158,255,.46);color:#d7e7ff;}
+.addform{display:none;background:linear-gradient(135deg,rgba(10,18,38,.94),rgba(7,12,24,.98));border:1px solid rgba(88,128,198,.16);padding:14px;margin-top:6px;box-shadow:0 14px 26px rgba(3,8,18,.24);}
+.addform.vis{display:block;}
+.frow{display:flex;gap:7px;margin-bottom:7px;flex-wrap:wrap;}
+.finput{background:rgba(255,255,255,.04);border:1px solid rgba(88,128,198,.18);color:var(--text);padding:7px 10px;font-family:'Rajdhani',sans-serif;font-size:12px;flex:1;min-width:100px;}
+.finput:focus{outline:none;border-color:var(--aura2);box-shadow:0 0 0 3px rgba(96,184,255,.08);}
+.fsel{background:#07101d;border:1px solid rgba(88,128,198,.18);color:var(--text);padding:7px 10px;font-family:'Rajdhani',sans-serif;font-size:12px;}
+.fsub{background:linear-gradient(135deg,#305dce,#5f8fff,#82d2ff);border:none;color:#f7fbff;padding:8px 18px;font-family:'Orbitron',monospace;font-size:10px;letter-spacing:1px;cursor:pointer;font-weight:700;}
+.notif{position:fixed;top:16px;right:16px;background:rgba(8,16,38,.97);border:1px solid rgba(104,158,255,.34);border-left:3px solid var(--aura2);padding:10px 14px;z-index:9998;display:none;max-width:260px;box-shadow:0 16px 32px rgba(3,8,18,.28);}
+.notif.show{display:block;animation:sli .3s ease;}
+@keyframes sli{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
+.notift{font-family:'Orbitron',monospace;font-size:8px;color:var(--aura2);letter-spacing:2px;}
+.notifm{font-size:13px;color:#c8d6f0;margin-top:2px;}
+.lvlup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,rgba(10,22,48,.99),rgba(10,16,30,.99));border:2px solid var(--aura2);padding:28px 48px;text-align:center;z-index:9999;display:none;box-shadow:0 0 80px rgba(82,126,224,.32);}
+.lvlup.show{display:block;animation:lup .4s cubic-bezier(.34,1.56,.64,1);}
+@keyframes lup{from{transform:translate(-50%,-50%) scale(.4);opacity:0}to{transform:translate(-50%,-50%) scale(1);opacity:1}}
+.lvlupt{font-family:'Orbitron',monospace;font-size:26px;font-weight:900;color:var(--aura2);text-shadow:0 0 40px rgba(96,184,255,.55);letter-spacing:4px;}
+.lvlups{font-size:13px;color:#a0b4e0;margin-top:6px;letter-spacing:2px;}
+.achnot{position:fixed;bottom:16px;right:16px;background:linear-gradient(135deg,rgba(30,20,5,.98),rgba(50,35,5,.98));border:1px solid rgba(255,215,64,.4);border-left:3px solid #ffd740;padding:12px 16px;z-index:9997;display:none;max-width:280px;}
+.achnot.show{display:block;animation:sli .3s ease;}
+.achnott{font-family:'Orbitron',monospace;font-size:8px;color:#ffd740;letter-spacing:2px;}
+.achnotm{font-size:14px;color:#ffe082;margin-top:2px;font-weight:700;}
+.history-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.86);z-index:6100;align-items:center;justify-content:center;padding:16px;}
+.history-modal.show{display:flex;}
+.history-inner{background:linear-gradient(135deg,rgba(10,18,42,.99),rgba(6,10,24,.99));border:1px solid rgba(64,128,255,.34);padding:22px;max-width:420px;width:100%;position:relative;}
+.history-inner::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--aura),var(--aura2),transparent);}
+.history-close{position:absolute;top:10px;right:14px;color:#4f6384;cursor:pointer;font-size:18px;font-family:'Orbitron',monospace;}
+.history-modal-title{font-family:'Orbitron',monospace;font-size:14px;color:#e8f0ff;letter-spacing:2px;margin-bottom:4px;}
+.history-modal-sub{font-size:10px;color:#5f7699;letter-spacing:1px;margin-bottom:14px;}
+.history-break-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px;}
+.history-break-box{background:rgba(255,255,255,.03);border:1px solid rgba(70,110,255,.1);padding:10px;}
+.history-break-k{font-size:8px;color:#50698d;letter-spacing:2px;margin-bottom:5px;}
+.history-break-v{font-family:'Orbitron',monospace;font-size:18px;color:#e8f0ff;}
+.history-break-note{font-size:10px;color:#6480a4;line-height:1.5;}
+.history-note{margin-top:12px;padding:10px 12px;border:1px solid rgba(88,128,198,.12);background:rgba(12,22,40,.38);font-size:11px;color:#b8c9e6;line-height:1.5;}
+.history-day{cursor:pointer;}
+.focus-card.overdue{border-color:rgba(255,122,122,.26);box-shadow:inset 0 0 0 1px rgba(255,122,122,.08);}
+.qi.overdue{border-color:rgba(255,122,122,.2);}
+.qi.overdue .qdesc{color:#b9878f;}
+.week-strip{margin-bottom:12px;background:linear-gradient(135deg,rgba(10,18,40,.95),rgba(7,12,24,.98));border:1px solid var(--line);padding:12px;box-shadow:0 14px 28px rgba(3,8,18,.24);}
+.week-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;}
+.week-nav{display:flex;gap:8px;align-items:center;}
+.week-btn{background:rgba(12,22,40,.72);border:1px solid rgba(88,128,198,.18);color:#aecdff;padding:6px 9px;font-family:'Orbitron',monospace;font-size:9px;letter-spacing:1px;cursor:pointer;}
+.week-label{font-family:'Orbitron',monospace;font-size:10px;letter-spacing:2px;color:#aecdff;}
+.week-days{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;}
+.week-day{background:linear-gradient(180deg,rgba(10,20,42,.58),rgba(8,14,28,.44));border:1px solid rgba(72,102,165,.18);padding:8px 6px;cursor:pointer;min-height:64px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;}
+.week-day::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:rgba(72,102,165,.18);}
+.week-day.state-progress::before{background:linear-gradient(90deg,#4c7dff,#60b8ff);}
+.week-day.state-strong::before{background:linear-gradient(90deg,#2bd88f,#62f0b8);}
+.week-day.state-perfect::before{background:linear-gradient(90deg,#ffd76b,#fff0a8);}
+.week-day.sel{border-color:rgba(126,182,255,.38);box-shadow:inset 0 0 0 1px rgba(126,182,255,.24),0 0 18px rgba(34,82,160,.18);}
+.week-dow{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:1px;color:#6c84a6;}
+.week-num{font-family:'Orbitron',monospace;font-size:16px;color:#e6f0ff;}
+.week-sub{font-size:9px;color:#90a8ca;}
+.slot-divider{display:flex;align-items:center;gap:8px;margin:10px 0 6px;}
+.slot-divider::after{content:'';flex:1;height:1px;background:rgba(88,128,198,.1);}
+.slot-label{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:2px;color:#7f99bb;}
+@media(max-width:700px){.dash-grid{grid-template-columns:1fr;}.summary-grid{grid-template-columns:repeat(2,1fr);}.insight-grid{grid-template-columns:1fr;}.focus-grid{grid-template-columns:1fr;}.profile-grid{grid-template-columns:1fr;}.profile-avatar-lg{width:96px;height:96px;}}
+
+/* ── PWA MOBILE OPTIMISATIONS ─────────────────────────────────────────── */
+:root{--safe-bottom:env(safe-area-inset-bottom,0px);}
+*{-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+body{overscroll-behavior:none;-webkit-overflow-scrolling:touch;padding-bottom:calc(64px + var(--safe-bottom));}
+.wrap{padding-bottom:8px;}
+
+/* Bigger tap targets on mobile */
+@media(max-width:768px){
+  .tab{padding:10px 10px;font-size:9px;}
+  .qty-btn{width:36px;height:36px;font-size:18px;}
+  .qchk{width:26px;height:26px;font-size:14px;}
+  .qi{padding:12px 10px;gap:8px;}
+  .sbox{padding:11px 4px;}
+  .sval{font-size:20px;}
+  .focus-btn{padding:11px 14px;font-size:10px;}
+  .addbtn{padding:14px;}
+  .fsub{padding:12px 20px;}
+  .retire-btn,.edit-btn{padding:5px 10px;font-size:10px;}
+  .tabs{display:none;} /* replaced by bottom nav */
+  .week-days{gap:4px;}
+  .week-day{min-height:54px;padding:6px 4px;}
+  .week-num{font-size:14px;}
+}
+
+/* ── BOTTOM NAV ───────────────────────────────────────────────────────── */
+.bottom-nav{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;
+  height:calc(58px + var(--safe-bottom));
+  background:linear-gradient(180deg,rgba(7,12,24,.96),rgba(5,9,17,.99));
+  border-top:1px solid rgba(88,128,198,.22);
+  z-index:800;
+  padding-bottom:var(--safe-bottom);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+@media(max-width:768px){.bottom-nav{display:flex;}}
+.bnav-items{display:flex;width:100%;height:58px;}
+.bnav-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:3px;cursor:pointer;
+  color:#4a6080;font-family:'Orbitron',monospace;font-size:7px;
+  letter-spacing:1px;padding:6px 2px;border:none;background:none;
+  transition:color .18s;
+  -webkit-tap-highlight-color:transparent;
+}
+.bnav-item.on{color:#7bc7ff;}
+.bnav-item svg{width:20px;height:20px;stroke-width:1.8;fill:none;}
+.bnav-item.on svg{stroke:#7bc7ff;}
+.bnav-item svg{stroke:#4a6080;}
+
+/* ── BACKUP BAR ───────────────────────────────────────────────────────── */
+.backup-bar{
+  background:linear-gradient(135deg,rgba(7,13,26,.96),rgba(5,9,17,.98));
+  border:1px solid rgba(88,128,198,.16);
+  border-left:3px solid #5f8fff;
+  padding:10px 14px;margin-bottom:12px;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.backup-bar-t{font-family:'Orbitron',monospace;font-size:8px;color:#7bc7ff;letter-spacing:2px;flex:1;}
+.backup-btn{
+  background:rgba(70,126,255,.12);border:1px solid rgba(104,158,255,.28);
+  color:#aecdff;padding:7px 12px;font-family:'Orbitron',monospace;
+  font-size:8px;letter-spacing:1px;cursor:pointer;white-space:nowrap;
+}
+.backup-btn.danger{background:rgba(255,80,80,.08);border-color:rgba(255,80,80,.24);color:#ff9090;}
+.backup-btn:hover{border-color:rgba(104,158,255,.5);color:#dce9ff;}
+.backup-size{font-size:9px;color:#3a5080;letter-spacing:1px;}
+
+/* ── INSTALL BANNER ───────────────────────────────────────────────────── */
+.install-banner{
+  display:none;position:fixed;bottom:calc(64px + var(--safe-bottom));left:12px;right:12px;
+  background:linear-gradient(135deg,rgba(10,22,50,.98),rgba(6,12,28,.99));
+  border:1px solid rgba(104,158,255,.38);border-left:3px solid #7bc7ff;
+  padding:12px 14px;z-index:900;
+  box-shadow:0 -8px 28px rgba(3,8,18,.4);
+}
+.install-banner.show{display:flex;align-items:center;gap:10px;}
+.install-banner-t{flex:1;font-size:12px;color:#c8deff;}
+.install-banner-sub{font-size:10px;color:#5a7098;margin-top:2px;}
+.install-btn{background:linear-gradient(135deg,#305dce,#5f8fff);border:none;color:#fff;padding:9px 14px;font-family:'Orbitron',monospace;font-size:9px;letter-spacing:1px;cursor:pointer;white-space:nowrap;}
+.install-dismiss{background:none;border:none;color:#3a5080;font-size:18px;cursor:pointer;padding:4px 8px;}
+
+
+/* ── RESET MODAL ──────────────────────────────────────────────────────── */
+.reset-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:7000;align-items:center;justify-content:center;padding:20px;}
+.reset-modal.show{display:flex;}
+.reset-inner{background:linear-gradient(135deg,rgba(10,6,20,.99),rgba(6,4,14,.99));border:1px solid rgba(255,50,80,.35);padding:24px;max-width:360px;width:100%;position:relative;}
+.reset-inner::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#ff4060,transparent);}
+.reset-title{font-family:'Orbitron',monospace;font-size:14px;font-weight:900;color:#ff6080;letter-spacing:2px;margin-bottom:6px;}
+.reset-warning{font-size:11px;color:#7a4050;line-height:1.7;margin-bottom:16px;}
+.reset-warning span{color:#ff8090;}
+.reset-input-label{font-family:'Orbitron',monospace;font-size:9px;color:#7bc7ff;letter-spacing:2px;margin-bottom:6px;}
+.reset-input{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,50,80,.28);color:#ffd0d8;padding:10px 12px;font-family:'Orbitron',monospace;font-size:14px;letter-spacing:4px;text-align:center;margin-bottom:14px;}
+.reset-input:focus{outline:none;border-color:rgba(255,50,80,.6);}
+.reset-input.shake{animation:reset-shake .3s ease;}
+@keyframes reset-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.reset-actions{display:flex;gap:8px;}
+.reset-go-btn{flex:1;background:rgba(255,40,70,.16);border:1px solid rgba(255,50,80,.4);color:#ff6080;padding:11px;font-family:'Orbitron',monospace;font-size:10px;letter-spacing:1px;cursor:pointer;font-weight:700;}
+.reset-go-btn:active{background:rgba(255,40,70,.28);}
+.reset-cancel-btn{background:none;border:1px solid rgba(88,128,198,.18);color:#4a6080;padding:11px 16px;font-family:'Orbitron',monospace;font-size:10px;cursor:pointer;}
+.reset-cancel-btn:active{border-color:rgba(88,128,198,.4);}
+
+/* ── XP GAIN POPUP ────────────────────────────────────────────────────── */
+.xp-popup{
+  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.7);
+  background:linear-gradient(135deg,rgba(8,16,42,.98),rgba(5,10,24,.99));
+  border:1px solid rgba(104,158,255,.45);
+  padding:20px 28px;text-align:center;z-index:9995;
+  display:none;pointer-events:none;
+  box-shadow:0 0 60px rgba(82,126,224,.28),inset 0 1px 0 rgba(120,172,255,.1);
+  min-width:200px;
+}
+.xp-popup::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#5f8fff,#7bc7ff,transparent);}
+.xp-popup.show{display:block;animation:xp-pop .38s cubic-bezier(.34,1.56,.64,1) forwards;}
+.xp-popup.hide{animation:xp-fade .28s ease forwards;}
+@keyframes xp-pop{from{transform:translate(-50%,-50%) scale(0.5);opacity:0}to{transform:translate(-50%,-50%) scale(1);opacity:1}}
+@keyframes xp-fade{from{transform:translate(-50%,-50%) scale(1);opacity:1}to{transform:translate(-50%,-50%) scale(0.85);opacity:0}}
+.xpp-label{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:3px;color:#7bc7ff;margin-bottom:8px;}
+.xpp-name{font-size:13px;color:#aecdff;margin-bottom:10px;font-weight:600;}
+.xpp-xp{font-family:'Orbitron',monospace;font-size:38px;font-weight:900;color:#5f8fff;text-shadow:0 0 28px rgba(95,143,255,.6);line-height:1;}
+.xpp-xp-label{font-size:11px;color:#7bc7ff;letter-spacing:2px;margin-top:4px;}
+.xpp-stat{font-size:10px;color:#3a5a80;margin-top:10px;letter-spacing:1px;}
+.xpp-undo{font-size:9px;color:#3a5080;margin-top:8px;border-top:1px solid rgba(88,128,198,.12);padding-top:8px;letter-spacing:1px;}
+.xpp-tier{font-family:'Orbitron',monospace;font-size:9px;font-weight:900;padding:2px 6px;border:1px solid;display:inline-block;margin-bottom:8px;}
+
+</style>
+</head>
+<body>
+
+<!-- BOTTOM NAV (mobile only) -->
+<nav class="bottom-nav" id="bottom-nav">
+  <div class="bnav-items">
+    <button class="bnav-item on" id="bnav-quests" onclick="bnavSw('quests')">
+      <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+      QUESTS
+    </button>
+    <button class="bnav-item" id="bnav-insight" onclick="bnavSw('insight')">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      INSIGHT
+    </button>
+    <button class="bnav-item" id="bnav-bonus" onclick="bnavSw('bonus')">
+      <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      BONUS
+    </button>
+    <button class="bnav-item" id="bnav-boss" onclick="bnavSw('boss')">
+      <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      BOSS
+    </button>
+    <button class="bnav-item" id="bnav-ach" onclick="bnavSw('ach')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+      RANKS
+    </button>
+    <button class="bnav-item" id="bnav-profile" onclick="bnavSw('profile')">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      PROFILE
+    </button>
+  </div>
+</nav>
+
+<!-- INSTALL BANNER -->
+<div class="install-banner" id="install-banner">
+  <div>
+    <div class="install-banner-t">Add to Home Screen</div>
+    <div class="install-banner-sub">Install for offline access &amp; native feel</div>
+  </div>
+  <button class="install-btn" id="install-btn">INSTALL</button>
+  <button class="install-dismiss" onclick="document.getElementById('install-banner').classList.remove('show')">✕</button>
+</div>
+
+
+<!-- RESET MODAL -->
+<div class="reset-modal" id="reset-modal">
+  <div class="reset-inner">
+    <div class="reset-title">⚠ SYSTEM RESET</div>
+    <div class="reset-warning">
+      This will permanently erase:<br>
+      <span>All XP · All levels · All stats · All streaks · All history · All notes</span><br><br>
+      Quests will reset to defaults. This cannot be undone. Export a backup first if you want to keep your data.
+    </div>
+    <div class="reset-input-label">◈ TYPE "RESET" TO CONFIRM</div>
+    <input class="reset-input" id="reset-confirm-input" placeholder="RESET" maxlength="5" autocomplete="off" autocorrect="off" spellcheck="false">
+    <div class="reset-actions">
+      <button class="reset-cancel-btn" onclick="closeResetModal()">CANCEL</button>
+      <button class="reset-go-btn" onclick="confirmHardReset()">WIPE SYSTEM</button>
+    </div>
+  </div>
+</div>
+
+<!-- XP GAIN POPUP -->
+<div class="xp-popup" id="xp-popup">
+  <div class="xpp-label">◈ QUEST COMPLETE</div>
+  <div class="xpp-tier" id="xpp-tier"></div>
+  <div class="xpp-name" id="xpp-name"></div>
+  <div class="xpp-xp" id="xpp-xp">+0</div>
+  <div class="xpp-xp-label">XP GAINED</div>
+  <div class="xpp-stat" id="xpp-stat"></div>
+  <div class="xpp-undo" id="xpp-undo"></div>
+</div>
+
+<div class="scan"></div>
+<div class="lvlup" id="lvlup"><div class="lvlupt">LEVEL UP</div><div class="lvlups" id="lvlups"></div></div>
+<div class="notif" id="notif"><div class="notift">◈ SYSTEM</div><div class="notifm" id="notifm"></div></div>
+<div class="achnot" id="achnot"><div class="achnott">◈ MILESTONE REACHED</div><div class="achnotm" id="achnotm"></div></div>
+
+<div class="stat-modal" id="stat-modal" onclick="closeStat(event)">
+  <div class="stat-modal-inner">
+    <span class="smo-close" onclick="document.getElementById('stat-modal').classList.remove('show')">✕</span>
+    <div id="smo-content"></div>
+  </div>
+</div>
+
+<div class="history-modal" id="history-modal" onclick="closeHistoryModal(event)">
+  <div class="history-inner">
+    <span class="history-close" onclick="document.getElementById('history-modal').classList.remove('show')">âœ•</span>
+    <div id="history-modal-content"></div>
+  </div>
+</div>
+
+<div class="edit-modal" id="edit-modal" onclick="closeEditModal(event)">
+  <div class="edit-inner">
+    <div class="edit-title">EDIT QUEST</div>
+    <div class="edit-sub">Adjust the habit instead of recreating it.</div>
+    <div class="frow">
+      <input class="finput" id="en" placeholder="Quest name">
+      <select class="fsel" id="estat">
+        <option value="str">⚔️ Strength</option><option value="int">🧠 Intelligence</option>
+        <option value="vit">💚 Vitality</option><option value="con">🔒 Self Control</option><option value="dis">⚡ Discipline</option>
+      </select>
+    </div>
+    <div class="frow">
+      <input class="finput" id="ed" placeholder="Description (optional)">
+      <select class="fsel" id="etype">
+        <option value="full">Simple on/off</option><option value="qty">Quantity based</option><option value="minmax">Min / Full</option>
+      </select>
+    </div>
+    <div class="frow">
+      <select class="fsel" id="epriority">
+        <option value="normal">Normal Priority</option><option value="high">High Priority</option><option value="critical">Critical Priority</option>
+      </select>
+      <select class="fsel" id="eslot">
+        <option value="anytime">Anytime</option><option value="morning">Morning</option><option value="day">Day</option><option value="night">Night</option>
+      </select>
+      <select class="fsel" id="etier">
+        <option value="D">D Rank</option><option value="C">C Rank</option><option value="B">B Rank</option><option value="A">A Rank</option><option value="S">S Rank</option>
+      </select>
+    </div>
+    <div class="frow">
+      <select class="fsel" id="esched" onchange="toggleScheduleRow('e')">
+        <option value="daily">Daily</option><option value="weekdays">Weekdays</option><option value="weekends">Weekends</option><option value="custom">Custom Days</option>
+      </select>
+    </div>
+    <div class="frow" id="eday-row" style="display:none">
+      <div class="day-chips" id="eday-chips"></div>
+    </div>
+    <div class="frow" id="eqty-row" style="display:none">
+      <input class="finput" id="eqtymax" type="number" placeholder="Max quantity" min="2" max="20">
+      <input class="finput" id="eqtyunit" placeholder="Unit (e.g. reps)">
+    </div>
+    <div class="edit-actions">
+      <button class="retire-cancel-btn" onclick="closeEditModal()">CANCEL</button>
+      <button class="edit-save-btn" onclick="saveQuestEdit()">SAVE CHANGES</button>
+    </div>
+  </div>
+</div>
+
+<div class="retire-modal" id="retire-modal">
+  <div class="retire-inner">
+    <div class="retire-title">◈ RETIRE QUEST</div>
+    <div class="retire-sub" id="retire-sub">You've outgrown this gate. Mark it retired.</div>
+    <div class="retire-old" id="retire-old-info"></div>
+    <div class="retire-divider"><div class="retire-divider-line"></div><div class="retire-divider-txt">REPLACEMENT (OPTIONAL)</div><div class="retire-divider-line"></div></div>
+    <div class="frow">
+      <input class="finput" id="rn" placeholder="New quest name (or leave blank)">
+      <select class="fsel" id="rstat">
+        <option value="str">⚔️ Strength</option><option value="int">🧠 Intelligence</option>
+        <option value="vit">💚 Vitality</option><option value="con">🔒 Self Control</option><option value="dis">⚡ Discipline</option>
+      </select>
+    </div>
+    <div class="frow">
+      <input class="finput" id="rd" placeholder="Description (optional)">
+      <select class="fsel" id="rtype">
+        <option value="full">Simple on/off</option><option value="qty">Quantity based</option><option value="minmax">Min / Full</option>
+      </select>
+    </div>
+    <div class="frow" id="rqty-row" style="display:none">
+      <input class="finput" id="rqtymax" type="number" placeholder="Max quantity" min="2" max="20">
+      <input class="finput" id="rqtyunit" placeholder="Unit (e.g. reps)">
+    </div>
+    <div style="font-size:9px;color:#5a6080;letter-spacing:2px;margin-bottom:6px;">◈ NEW GATE TIER</div>
+    <div class="tier-sel" id="rtier-sel">
+      <div class="tier-opt sel-D" data-tier="D" onclick="selReplaceTier('D')">D<br><span style="font-size:7px;font-family:Rajdhani,sans-serif;letter-spacing:0">15 XP</span></div>
+      <div class="tier-opt" data-tier="C" onclick="selReplaceTier('C')">C<br><span style="font-size:7px;font-family:Rajdhani,sans-serif;letter-spacing:0">25 XP</span></div>
+      <div class="tier-opt" data-tier="B" onclick="selReplaceTier('B')">B<br><span style="font-size:7px;font-family:Rajdhani,sans-serif;letter-spacing:0">40 XP</span></div>
+      <div class="tier-opt" data-tier="A" onclick="selReplaceTier('A')">A<br><span style="font-size:7px;font-family:Rajdhani,sans-serif;letter-spacing:0">65 XP</span></div>
+      <div class="tier-opt" data-tier="S" onclick="selReplaceTier('S')">S<br><span style="font-size:7px;font-family:Rajdhani,sans-serif;letter-spacing:0">100 XP</span></div>
+    </div>
+    <div class="tier-hint" id="rtier-hint">D-Rank Gate — Light habit or routine. · 15 XP</div>
+    <div class="retire-actions">
+      <button class="retire-cancel-btn" onclick="closeRetireModal()">CANCEL</button>
+      <button class="retire-confirm-btn" onclick="confirmRetire(false)">RETIRE ONLY</button>
+      <button class="retire-replace-btn" onclick="confirmRetire(true)">RETIRE + NEW QUEST</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+<div class="sys-bar">
+  <div class="sys-bar-t">◈ SYSTEM NOTIFICATION</div>
+  <div class="sys-bar-m">Stats capped at 100. Growth slows as you climb. Inactivity decays stats above 50. Gate Tiers D→S — retire quests when you level up your real-life activity.</div>
+</div>
+
+<div class="pcard">
+  <div class="pcard-top">
+    <div class="avatar" id="hero-avatar"><span class="avatar-fallback" id="hero-avatar-fallback">⚔️</span><img id="hero-avatar-img" alt="Hunter avatar" style="display:none"></div>
+    <div class="pinfo">
+      <div class="pname" id="pname">PETER</div>
+      <div class="pclass" id="pclass">◈ AWAKENED HUNTER</div>
+      <div class="ptitle" id="ptitle"></div>
+    </div>
+    <div class="prank" id="prank">E</div>
+  </div>
+  <div class="xph"><span class="xpl">◈ LEVEL <span id="plvl">1</span></span><span class="xpv"><span id="pxp">0</span> / <span id="pxpn">100</span> XP</span></div>
+  <div class="xpbg"><div class="xpfill" id="xpbar" style="width:0%"></div></div>
+  <div class="total-xp">TOTAL XP EARNED: <span id="totalxp">0</span></div>
+</div>
+
+<div class="sgrid">
+  <div class="sbox str" onclick="openStat('str')"><div class="sico">⚔️</div><div class="snm">STRENGTH</div><div class="sval" id="ss">0</div><div class="sbar"><div class="sbarfill" id="bs" style="width:0%"></div></div><div class="sbadge" id="badge-str"></div><div class="strend" id="trend-str"></div><div class="sdecay" id="decay-str"></div></div>
+  <div class="sbox int" onclick="openStat('int')"><div class="sico">🧠</div><div class="snm">INTEL</div><div class="sval" id="si">0</div><div class="sbar"><div class="sbarfill" id="bi" style="width:0%"></div></div><div class="sbadge" id="badge-int"></div><div class="strend" id="trend-int"></div><div class="sdecay" id="decay-int"></div></div>
+  <div class="sbox vit" onclick="openStat('vit')"><div class="sico">💚</div><div class="snm">VITALITY</div><div class="sval" id="sv">0</div><div class="sbar"><div class="sbarfill" id="bv" style="width:0%"></div></div><div class="sbadge" id="badge-vit"></div><div class="strend" id="trend-vit"></div><div class="sdecay" id="decay-vit"></div></div>
+  <div class="sbox con" onclick="openStat('con')"><div class="sico">🔒</div><div class="snm">CONTROL</div><div class="sval" id="sc">0</div><div class="sbar"><div class="sbarfill" id="bc" style="width:0%"></div></div><div class="sbadge" id="badge-con"></div><div class="strend" id="trend-con"></div><div class="sdecay" id="decay-con"></div></div>
+  <div class="sbox dis" onclick="openStat('dis')"><div class="sico">⚡</div><div class="snm">DISCIPLINE</div><div class="sval" id="sd">0</div><div class="sbar"><div class="sbarfill" id="bd" style="width:0%"></div></div><div class="sbadge" id="badge-dis"></div><div class="strend" id="trend-dis"></div><div class="sdecay" id="decay-dis"></div></div>
+</div>
+
+<div class="tabs">
+  <div class="tab on" onclick="sw('quests')">◈ QUESTS</div>
+  <div class="tab" onclick="sw('bonus')">◈ BONUS</div>
+  <div class="tab" onclick="sw('boss')">◈ BOSS</div>
+  <div class="tab" onclick="sw('ach')">◈ ACHIEVEMENTS</div>
+  <div class="tab" onclick="sw('log')">◈ LOG</div>
+  <div class="tab" onclick="sw('profile')">◈ PROFILE</div>
+</div>
+
+<div class="tsec on" id="tab-quests">
+  <div class="tier-info">
+    <span style="font-size:8px;color:#3a5080;letter-spacing:2px;margin-right:4px;">◈ GATE TIERS:</span>
+    <span class="tier-info-item qtier-D">D 15xp</span>
+    <span class="tier-info-item qtier-C">C 25xp</span>
+    <span class="tier-info-item qtier-B">B 40xp</span>
+    <span class="tier-info-item qtier-A">A 65xp</span>
+    <span class="tier-info-item qtier-S">S 100xp</span>
+    <span style="font-size:8px;color:#2a3a58;margin-left:4px;">· XP scales with level · Retire when you outgrow a habit</span>
+  </div>
+  <div class="dash-grid">
+    <div class="dash-card">
+      <div class="dash-title">SYSTEM SUMMARY</div>
+      <div id="daily-summary"></div>
+    </div>
+    <div class="dash-card">
+      <div class="history-head">
+        <div class="dash-title" style="margin-bottom:0">QUEST HISTORY</div>
+        <div class="history-head-right">
+          <div class="history-meta" id="history-meta-label">LAST 7 DAYS</div>
+          <button class="history-toggle" id="history-toggle-btn" onclick="toggleHistoryRange()">EXPAND</button>
+        </div>
+      </div>
+      <div id="history-calendar"></div>
+    </div>
+  </div>
+  <div class="dash-grid">
+    <div class="dash-card">
+      <div class="dash-title">WEEKLY INSIGHT</div>
+      <div id="weekly-insight"></div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-title">DAY NOTE</div>
+      <textarea class="note-area" id="today-note-input" placeholder="Add a short note for today. Energy, travel, sickness, great focus, anything worth remembering."></textarea>
+      <div class="note-chips">
+        <button class="note-chip" onclick="appendTodayNote('Locked in')">LOCKED IN</button>
+        <button class="note-chip" onclick="appendTodayNote('Low energy')">LOW ENERGY</button>
+        <button class="note-chip" onclick="appendTodayNote('Travel day')">TRAVEL</button>
+        <button class="note-chip" onclick="appendTodayNote('Sick day')">SICK</button>
+      </div>
+      <div class="note-actions">
+        <div class="note-meta" id="today-note-meta">Stored with today&apos;s record.</div>
+        <button class="quest-toggle" onclick="saveTodayNote()">SAVE NOTE</button>
+      </div>
+    </div>
+  </div>
+  <div class="today-focus" id="today-focus"></div>
+  <div class="quest-toolbar">
+    <div class="focus-meta">Tap fast here, review deeper below.</div>
+    <button class="quest-toggle" id="remaining-toggle-btn" onclick="toggleRemainingOnly()">REMAINING ONLY</button>
+  </div>
+  <div id="qlist"></div>
+  <button class="addbtn" onclick="togForm()">+ REGISTER NEW QUEST</button>
+  <div class="addform" id="addform">
+    <div class="frow">
+      <input class="finput" id="fn" placeholder="Quest name">
+      <select class="fsel" id="fstat">
+        <option value="str">⚔️ Strength</option><option value="int">🧠 Intelligence</option>
+        <option value="vit">💚 Vitality</option><option value="con">🔒 Self Control</option><option value="dis">⚡ Discipline</option>
+      </select>
+    </div>
+    <div class="frow">
+      <input class="finput" id="fd" placeholder="Description (optional)">
+      <select class="fsel" id="ftype">
+        <option value="full">Simple on/off</option><option value="qty">Quantity based</option><option value="minmax">Min / Full</option>
+      </select>
+    </div>
+    <div class="frow" id="fqty-row" style="display:none">
+      <input class="finput" id="fqtymax" type="number" placeholder="Max quantity (e.g. 5)" min="2" max="20">
+      <input class="finput" id="fqtyunit" placeholder="Unit (e.g. problems)">
+    </div>
+    <div class="frow">
+      <select class="fsel" id="fpriority">
+        <option value="normal">Normal Priority</option><option value="high">High Priority</option><option value="critical">Critical Priority</option>
+      </select>
+      <select class="fsel" id="fslot">
+        <option value="anytime">Anytime</option><option value="morning">Morning</option><option value="day">Day</option><option value="night">Night</option>
+      </select>
+      <select class="fsel" id="fsched" onchange="toggleScheduleRow('f')">
+        <option value="daily">Daily</option><option value="weekdays">Weekdays</option><option value="weekends">Weekends</option><option value="custom">Custom Days</option>
+      </select>
+    </div>
+    <div class="frow" id="fday-row" style="display:none">
+      <div class="day-chips" id="fday-chips"></div>
+    </div>
+    <div style="font-size:9px;color:#5a6080;letter-spacing:2px;margin-bottom:6px;">◈ GATE TIER — HOW HARD IS THIS?</div>
+    <div class="tier-sel" id="ftier-sel">
+      <div class="tier-opt sel-D" data-tier="D" onclick="selTier('D')">D<br><span style="font-size:7px;font-family:Rajdhani,sans-serif;letter-spacing:0">15 XP</span></div>
+      <div class="tier-opt" data-tier="C" onclick="selTier('C')">C<br><span style="font-size:7px;font-family:Rajdhani,sans-serif;letter-spacing:0">25 XP</span></div>
+      <div class="tier-opt" data-tier="B" onclick="selTier('B')">B<br><span style="font-size:7px;font-family:Rajdhani,sans-serif;letter-spacing:0">40 XP</span></div>
+      <div class="tier-opt" data-tier="A" onclick="selTier('A')">A<br><span style="font-size:7px;font-family:Rajdhani,sans-serif;letter-spacing:0">65 XP</span></div>
+      <div class="tier-opt" data-tier="S" onclick="selTier('S')">S<br><span style="font-size:7px;font-family:Rajdhani,sans-serif;letter-spacing:0">100 XP</span></div>
+    </div>
+    <div class="tier-hint" id="ftier-hint">D-Rank Gate — Light habit or routine. Low effort, quick to do. · 15 XP</div>
+    <button class="fsub" onclick="addQ()">REGISTER QUEST</button>
+  </div>
+</div>
+<div class="tsec" id="tab-bonus"><div id="bqsec"></div></div>
+<div class="tsec" id="tab-boss"><div id="bosssec"></div></div>
+<div class="tsec" id="tab-ach"><div class="ach-grid" id="achgrid"></div></div>
+<div class="tsec" id="tab-log"><div id="loglist" style="font-size:12px;color:#2a3a58;line-height:2.2;padding:6px;"></div></div>
+<div class="tsec" id="tab-profile">
+  <div class="profile-panel">
+    <div class="profile-grid">
+      <div class="profile-avatar-lg">
+        <span class="profile-avatar-fallback" id="profile-avatar-fallback">⚔️</span>
+        <img id="profile-avatar-img" alt="Profile avatar" style="display:none">
+      </div>
+      <div>
+        <div class="profile-title">HUNTER PROFILE</div>
+        <div class="profile-sub">Customize your identity before this becomes the Android build.</div>
+        <div class="frow">
+          <input class="finput" id="profile-name-input" maxlength="24" placeholder="Hunter name">
+        </div>
+        <div class="profile-actions">
+          <button class="profile-btn" onclick="saveProfileName()">SAVE NAME</button>
+          <button class="profile-btn" onclick="document.getElementById('profile-photo-input').click()">UPLOAD PHOTO</button>
+          <button class="profile-btn alt" onclick="clearProfilePhoto()">CLEAR PHOTO</button>
+        </div>
+        <input id="profile-photo-input" type="file" accept="image/*" style="display:none" onchange="handleProfilePhoto(event)">
+        <div class="profile-note">Your image is stored locally for this prototype and reflected instantly on the main hunter card.</div>
+      </div>
+    </div>
+  
+  <div style="margin-top:16px;">
+    <div class="backup-bar">
+      <div>
+        <div class="backup-bar-t">◈ DATA BACKUP</div>
+        <div class="backup-size" id="backup-size-label">Calculating...</div>
+      </div>
+      <button class="backup-btn" onclick="exportBackup()">EXPORT SAVE</button>
+      <button class="backup-btn" onclick="document.getElementById('import-file-input').click()">IMPORT SAVE</button>
+      <button class="backup-btn danger" onclick="hardReset()">RESET ALL</button>
+      <input id="import-file-input" type="file" accept=".json" style="display:none" onchange="importBackup(event)">
+    </div>
+    <div style="font-size:10px;color:#4a6080;line-height:1.6;padding:0 2px;">
+      Export saves your full save file as a JSON to Downloads. Import loads it back. 
+      Back up weekly — especially before clearing browser data or switching phones.
+      <br><br>
+      <strong style="color:#5a7098;">⚠ Do not clear site data / browser cache for this page or your save will be lost.</strong>
+    </div>
+  </div>
+
+</div>
+</div>
+</div>
+
+<script>
+const RANKS=[
+  {r:'E',lvl:1,col:'#6a7a9a',cls:'Awakened Hunter'},
+  {r:'E+',lvl:3,col:'#7a8aaa',cls:'Awakened Hunter'},
+  {r:'D',lvl:6,col:'#4a9a4a',cls:'Iron Hunter'},
+  {r:'D+',lvl:9,col:'#5aaa5a',cls:'Iron Hunter'},
+  {r:'C',lvl:13,col:'#4a70ff',cls:'Steel Warrior'},
+  {r:'C+',lvl:17,col:'#6a90ff',cls:'Steel Warrior'},
+  {r:'B',lvl:22,col:'#aa60ff',cls:'Shadow Knight'},
+  {r:'B+',lvl:28,col:'#cc80ff',cls:'Shadow Knight'},
+  {r:'A',lvl:35,col:'#ffaa20',cls:"Shadow Monarch's Chosen"},
+  {r:'A+',lvl:43,col:'#ffcc40',cls:"Shadow Monarch's Chosen"},
+  {r:'S',lvl:52,col:'#ff4060',cls:'National Level Hunter'},
+  {r:'S+',lvl:62,col:'#ff6080',cls:'National Level Hunter'},
+  {r:'SS',lvl:75,col:'#ff20a0',cls:'Monarch Class'},
+  {r:'SSS',lvl:90,col:'#ff40c0',cls:'Monarch Class'},
+  {r:'???',lvl:999,col:'#000000',cls:'???'},
+];
+function getRank(lvl){let c=RANKS[0];for(let i=RANKS.length-2;i>=0;i--){if(lvl>=RANKS[i].lvl){c=RANKS[i];break;}}return c;}
+function xpForLevel(l){return Math.floor(80*Math.pow(1.45,l-1));}
+
+const TIERS={
+  D:{xp:15,col:'#4a9a4a',label:'D-Rank Gate',hint:'Light habit or routine. Low effort, quick to do.'},
+  C:{xp:25,col:'#4a70ff',label:'C-Rank Gate',hint:'Regular training. Moderate effort, consistent commitment.'},
+  B:{xp:40,col:'#aa60ff',label:'B-Rank Gate',hint:'Serious session. Real dedication required.'},
+  A:{xp:65,col:'#ffaa20',label:'A-Rank Gate',hint:'High intensity. Peak effort, significant challenge.'},
+  S:{xp:100,col:'#ff4060',label:'S-Rank Gate',hint:'Elite level. Maximum output. Only the strongest attempt this.'},
+};
+function getTierXP(tier){return(TIERS[tier||'D']||TIERS.D).xp;}
+function getTierCol(tier){return(TIERS[tier||'D']||TIERS.D).col;}
+
+let _selectedTier='D';
+function selTier(t){
+  _selectedTier=t;
+  document.querySelectorAll('#ftier-sel .tier-opt').forEach(el=>{el.className='tier-opt'+(el.dataset.tier===t?' sel-'+t:'');});
+  const ti=TIERS[t];
+  document.getElementById('ftier-hint').textContent=`${ti.label} — ${ti.hint} · ${ti.xp} XP`;
+}
+
+const ZONE_COSTS=[{max:30,cost:40},{max:60,cost:80},{max:85,cost:160},{max:99,cost:320},{max:100,cost:640}];
+function costForNextPoint(p){for(const z of ZONE_COSTS){if(p<z.max)return z.cost;}return Infinity;}
+function xpToPoints(statXp){let pts=0,rem=statXp;while(pts<100&&rem>0){const c=costForNextPoint(pts);if(rem>=c){rem-=c;pts++;}else break;}return Math.min(pts,100);}
+function xpNeededForPoint(fromPts){let t=0;for(let p=0;p<fromPts;p++)t+=costForNextPoint(p);return t;}
+
+const MILESTONES={
+  str:[{at:25,badge:'🥉',title:'Iron Fist'},{at:50,badge:'🥈',title:'Steel Body'},{at:75,badge:'🥇',title:'Shadow Warrior'},{at:100,badge:'👑',title:'Monarch Strength'}],
+  int:[{at:25,badge:'📖',title:'Analyst'},{at:50,badge:'💡',title:'Algorithm Mind'},{at:75,badge:'🔮',title:'Shadow Scholar'},{at:100,badge:'👁️',title:'Omniscient'}],
+  vit:[{at:25,badge:'🌿',title:'Healthy'},{at:50,badge:'💪',title:'Fortified'},{at:75,badge:'🛡️',title:'Ironclad'},{at:100,badge:'♾️',title:'Undying'}],
+  con:[{at:25,badge:'🔗',title:'Restrained'},{at:50,badge:'⛓️',title:'Iron Will'},{at:75,badge:'🔒',title:'Unshakeable'},{at:100,badge:'💎',title:"Shadow Monarch's Will"}],
+  dis:[{at:25,badge:'⏱️',title:'Consistent'},{at:50,badge:'📋',title:'Disciplined'},{at:75,badge:'⚡',title:'Shadow Protocol'},{at:100,badge:'🌑',title:'Absolute Discipline'}],
+};
+function getStatBadge(stat,pts){const ms=MILESTONES[stat];let badge='',title='';for(const m of ms){if(pts>=m.at){badge=m.badge;title=m.title;}}return{badge,title};}
+function getHighestTitle(stats){let best='';['str','int','vit','con','dis'].forEach(s=>{const pts=xpToPoints(stats[s+'Xp']||0);const{title}=getStatBadge(s,pts);if(title)best=title;});return best;}
+function getStatIdentityLabel(stat){
+  return{
+    str:'Mind + Body',
+    int:'Learning Core',
+    vit:'Foundation',
+    con:'Self Trust',
+    dis:'Power'
+  }[stat]||'Balanced';
+}
+function getStatWeeklyTrend(stat){
+  const entries=getRecentEntries(7);
+  if(!entries.length)return 'new';
+  let total=0;
+  entries.forEach(entry=>{
+    const catStats=entry.catStats||{};
+    const row=catStats[stat]||{};
+    total+=(row.done||0);
+  });
+  if(total>=8)return 'up';
+  if(total>=4)return 'steady';
+  return 'low';
+}
+
+let S={xp:0,totalXp:0,level:1,stats:{strXp:0,intXp:0,vitXp:0,conXp:0,disXp:0},statLastActive:{str:'',int:'',vit:'',con:'',dis:''},quests:[],log:[],bonusQuest:null,bonusDate:'',bonusDone:false,bossWeek:'',bossHp:0,bossMaxHp:0,bossDone:false,bossName:'',bossDesc:'',bossReward:0,achievements:{},totalBonusDone:0,lastReset:'',todayXp:0,history:[],dailyNotes:{},profile:{name:'PETER',avatar:''}};
+let _historyExpanded=false,_showRemainingOnly=false,_collapsedCats={str:false,int:false,vit:false,con:false,dis:false},_dragQuestId=null;
+
+const ACHIEVEMENTS=[
+  {id:'first',name:'First Blood',desc:'Complete your first quest',ico:'⚔️',xp:50},
+  {id:'streak3',name:'Consistent',desc:'3 day streak on any quest',ico:'🔥',xp:100},
+  {id:'streak7',name:'Unbroken',desc:'7 day streak on any quest',ico:'💎',xp:250},
+  {id:'streak30',name:'Iron Will',desc:'30 day streak on any quest',ico:'👑',xp:1000},
+  {id:'lvl10',name:'Awakening',desc:'Reach level 10',ico:'✨',xp:200},
+  {id:'lvl25',name:'Shadow Step',desc:'Reach level 25',ico:'🌑',xp:500},
+  {id:'lvl50',name:'Monarch Rising',desc:'Reach level 50',ico:'👁️',xp:1500},
+  {id:'boss1',name:'Raid Clear',desc:'Complete your first boss raid',ico:'💀',xp:300},
+  {id:'allday',name:'Perfect Day',desc:'Complete all daily quests',ico:'⭐',xp:200},
+  {id:'stat25',name:'Stat Milestone',desc:'Any stat reaches 25',ico:'📈',xp:150},
+  {id:'stat50',name:'Half Century',desc:'Any stat reaches 50',ico:'🏆',xp:400},
+  {id:'stat100',name:'Maxed Out',desc:'Any stat reaches 100',ico:'💯',xp:2000},
+  {id:'bonus7',name:'Lucky Strike',desc:'Complete 7 bonus quests',ico:'🎯',xp:300},
+  {id:'nopmo7',name:'Fortress',desc:'7 days no PMO streak',ico:'🔒',xp:350},
+];
+
+const BONUS_POOL=[
+  {name:'Shadow Run',desc:'Run or skip for 25 minutes today',stat:'str',xp:60},
+  {name:'Algorithm Storm',desc:'Solve 3 DSA problems today',stat:'int',xp:70},
+  {name:'Iron Discipline',desc:'All medications taken on time today',stat:'dis',xp:65},
+  {name:'Digital Detox',desc:'Under 10 min Instagram today',stat:'con',xp:75},
+  {name:"Hunter's Rest",desc:'Sleep before 11pm tonight',stat:'vit',xp:55},
+  {name:'Clean Sweep',desc:'Full hygiene routine + flosser today',stat:'vit',xp:50},
+  {name:'Mind Over Body',desc:'No PMO + under 20min Instagram',stat:'con',xp:80},
+  {name:'Double Session',desc:'Two separate DSA sessions today',stat:'int',xp:70},
+  {name:'Vitality Surge',desc:'Run + full hygiene + sleep before 11',stat:'vit',xp:85},
+  {name:'Shadow Protocol',desc:'Complete every quest in one category',stat:'dis',xp:90},
+];
+
+const BOSSES=[
+  {name:'The Hollow Week',desc:'Complete at least 80% of all quests every day for 7 days',hp:700,reward:500},
+  {name:'Monarch of Impulse',desc:'7 days: no PMO, Instagram under 20min, sleep before midnight',hp:600,reward:450},
+  {name:'The Algorithm Dungeon',desc:'Solve 20 DSA problems in one week',hp:500,reward:400},
+  {name:'Iron Body Protocol',desc:'Run or skip every day for 7 days + full hygiene daily',hp:550,reward:420},
+  {name:'Shadow Discipline',desc:'All medications on time every single day for 7 days',hp:400,reward:350},
+];
+
+const DEFAULT_QUESTS=[
+  {id:1,name:'Morning skipping',desc:'15 min skipping + music',stat:'str',xp:15,baseXp:15,tier:'D',type:'minmax',priority:'high',timeSlot:'morning',scheduleType:'daily',scheduleDays:[0,1,2,3,4,5,6],minXp:7,qty:0,qtyMax:0,qtyUnit:'',streak:0,status:'none',totalQty:0},
+  {id:2,name:'Breathing exercise',desc:'5-10 min breathing',stat:'vit',xp:15,baseXp:15,tier:'D',type:'full',priority:'normal',timeSlot:'morning',scheduleType:'daily',scheduleDays:[0,1,2,3,4,5,6],minXp:0,qty:0,qtyMax:0,qtyUnit:'',streak:0,status:'none',totalQty:0},
+  {id:3,name:'DSA problems',desc:'Striver A2Z sheet',stat:'int',xp:25,baseXp:25,tier:'C',type:'qty',priority:'high',timeSlot:'day',scheduleType:'weekdays',scheduleDays:[1,2,3,4,5],minXp:0,qty:0,qtyMax:5,qtyUnit:'problems',streak:0,status:'none',totalQty:0},
+  {id:4,name:'Atomoxetine on time',desc:'1:30pm with lunch',stat:'dis',xp:15,baseXp:15,tier:'D',type:'full',priority:'critical',timeSlot:'day',scheduleType:'daily',scheduleDays:[0,1,2,3,4,5,6],minXp:0,qty:0,qtyMax:0,qtyUnit:'',streak:0,status:'none',totalQty:0},
+  {id:5,name:'Bilastine on time',desc:'Night, empty stomach',stat:'dis',xp:15,baseXp:15,tier:'D',type:'full',priority:'critical',timeSlot:'night',scheduleType:'daily',scheduleDays:[0,1,2,3,4,5,6],minXp:0,qty:0,qtyMax:0,qtyUnit:'',streak:0,status:'none',totalQty:0},
+  {id:6,name:'Glasses all day',desc:'On from waking',stat:'dis',xp:15,baseXp:15,tier:'D',type:'full',priority:'high',timeSlot:'morning',scheduleType:'daily',scheduleDays:[0,1,2,3,4,5,6],minXp:0,qty:0,qtyMax:0,qtyUnit:'',streak:0,status:'none',totalQty:0},
+  {id:7,name:'No PMO',desc:'Full day clean',stat:'con',xp:40,baseXp:40,tier:'B',type:'full',priority:'critical',timeSlot:'anytime',scheduleType:'daily',scheduleDays:[0,1,2,3,4,5,6],minXp:0,qty:0,qtyMax:0,qtyUnit:'',streak:0,status:'none',totalQty:0},
+  {id:8,name:'Instagram under limit',desc:'Under 20 min today',stat:'con',xp:25,baseXp:25,tier:'C',type:'full',priority:'high',timeSlot:'anytime',scheduleType:'daily',scheduleDays:[0,1,2,3,4,5,6],minXp:0,qty:0,qtyMax:0,qtyUnit:'',streak:0,status:'none',totalQty:0},
+  {id:9,name:'Bath + hygiene',desc:'Daily bath, apply Candid B',stat:'vit',xp:15,baseXp:15,tier:'D',type:'full',priority:'normal',timeSlot:'day',scheduleType:'daily',scheduleDays:[0,1,2,3,4,5,6],minXp:0,qty:0,qtyMax:0,qtyUnit:'',streak:0,status:'none',totalQty:0},
+  {id:10,name:'Flosser + brush',desc:'Night routine',stat:'vit',xp:15,baseXp:15,tier:'D',type:'full',priority:'high',timeSlot:'night',scheduleType:'daily',scheduleDays:[0,1,2,3,4,5,6],minXp:0,qty:0,qtyMax:0,qtyUnit:'',streak:0,status:'none',totalQty:0},
+  {id:11,name:'Sleep before midnight',desc:'Lights out by 11:30',stat:'vit',xp:25,baseXp:25,tier:'C',type:'full',priority:'high',timeSlot:'night',scheduleType:'daily',scheduleDays:[0,1,2,3,4,5,6],minXp:0,qty:0,qtyMax:0,qtyUnit:'',streak:0,status:'none',totalQty:0},
+  {id:12,name:'No mindless scroll',desc:'Phone face down when idle',stat:'con',xp:25,baseXp:25,tier:'C',type:'full',priority:'normal',timeSlot:'anytime',scheduleType:'daily',scheduleDays:[0,1,2,3,4,5,6],minXp:0,qty:0,qtyMax:0,qtyUnit:'',streak:0,status:'none',totalQty:0},
+  {id:13,name:'Candid B cream',desc:'Apply twice, wash area first',stat:'vit',xp:15,baseXp:15,tier:'D',type:'full',priority:'high',timeSlot:'night',scheduleType:'daily',scheduleDays:[0,1,2,3,4,5,6],minXp:0,qty:0,qtyMax:0,qtyUnit:'',streak:0,status:'none',totalQty:0},
+];
+
+function resetQuestProgress(q){
+  q.status='none';q.qty=0;
+  q._xpAwarded=0;q._statXpAwarded=0;q._xpMin=0;q._statXpMin=0;q._xpFull=0;q._statXpFull=0;q._unitXp=[];q._unitStatXp=[];
+}
+
+function createQuest(data){
+  const type=data.type||'full';
+  const tier=data.tier||'D';
+  const xp=(data.xp??getTierXP(tier));
+  return{id:data.id??Date.now(),name:data.name,desc:data.desc||'',stat:data.stat,xp,baseXp:data.baseXp??xp,tier,type,priority:data.priority||'normal',timeSlot:data.timeSlot||'anytime',scheduleType:data.scheduleType||'daily',scheduleDays:Array.isArray(data.scheduleDays)?data.scheduleDays:[0,1,2,3,4,5,6],order:data.order??Date.now(),minXp:type==='minmax'?(data.minXp??Math.floor(xp/2)):0,qty:0,qtyMax:type==='qty'?(data.qtyMax||3):0,qtyUnit:type==='qty'?(data.qtyUnit||'units'):(data.qtyUnit||''),streak:data.streak||0,status:'none',totalQty:data.totalQty||0};
+}
+
+function commitChanges(fullRender=true){save();if(fullRender)render();}
+function getQuestAwardedXp(q){return(q._xpAwarded||0)+(q._xpMin||0)+(q._xpFull||0)+((q._unitXp||[]).reduce((a,b)=>a+b,0));}
+function getCurrentSlot(){
+  const h=new Date().getHours();
+  if(h<12)return'morning';
+  if(h<18)return'day';
+  return'night';
+}
+function getDateKey(date){
+  const ref=(date instanceof Date)?new Date(date):new Date(date);
+  ref.setHours(0,0,0,0);
+  return ref.toDateString();
+}
+function getScheduleDays(type,days){
+  if(type==='weekdays')return[1,2,3,4,5];
+  if(type==='weekends')return[0,6];
+  if(type==='custom')return(Array.isArray(days)&&days.length)?days:[1,2,3,4,5];
+  return[0,1,2,3,4,5,6];
+}
+function isQuestDueOnDate(q,date){
+  const day=(date instanceof Date?date:new Date(date)).getDay();
+  const days=getScheduleDays(q.scheduleType,q.scheduleDays);
+  return days.includes(day);
+}
+function isQuestDueToday(q){
+  return isQuestDueOnDate(q,new Date());
+}
+function getSlotTag(q){
+  const slot=q.timeSlot||'anytime';
+  const label={morning:'MORNING',day:'DAY',night:'NIGHT',anytime:'ANYTIME'}[slot];
+  return`<span class="slot-tag">${label}</span>`;
+}
+function isQuestDone(q){
+  return q.type==='qty'?(q.qty>=(q.qtyMax||1)):(q.status==='full');
+}
+function getCategorySnapshot(date=new Date()){
+  const snap={str:{done:0,total:0},int:{done:0,total:0},vit:{done:0,total:0},con:{done:0,total:0},dis:{done:0,total:0}};
+  S.quests.filter(q=>isQuestDueOnDate(q,date)).forEach(q=>{
+    const bucket=snap[q.stat]||{done:0,total:0};
+    bucket.total++;
+    if(isQuestDone(q))bucket.done++;
+    snap[q.stat]=bucket;
+  });
+  return snap;
+}
+function getMissedHabitSnapshot(date=new Date()){
+  return S.quests.filter(q=>isQuestDueOnDate(q,date)&&!isQuestDone(q)).map(q=>q.name);
+}
+function isQuestOverdue(q){
+  if(!isQuestDueToday(q)||isQuestDone(q))return false;
+  const slotRank={morning:0,day:1,night:2,anytime:9};
+  const slot=q.timeSlot||'anytime';
+  if(slot==='anytime')return false;
+  return slotRank[slot]<slotRank[getCurrentSlot()];
+}
+function getOverdueTag(q){
+  return isQuestOverdue(q)?'<span class="overdue-tag">OVERDUE</span>':'';
+}
+function getCategoryTag(q){
+  const meta=getStatMeta(q.stat);
+  return`<span class="category-tag">${meta.nm}</span>`;
+}
+function getCompletionStats(date=new Date()){
+  const dueQuests=S.quests.filter(q=>isQuestDueOnDate(q,date));
+  const total=dueQuests.length;
+  let completed=0,partial=0;
+  dueQuests.forEach(q=>{
+    if(q.type==='qty'){
+      if(q.qty>=(q.qtyMax||1))completed++;
+      else if((q.qty||0)>0)partial++;
+    }else if(q.status==='full')completed++;
+    else if(q.status==='min')partial++;
+  });
+  const remaining=Math.max(0,total-completed-partial);
+  const completionPct=total?Math.round((completed/total)*100):0;
+  return{total,completed,partial,remaining,completionPct};
+}
+function getSnapshotForDate(date){
+  const ref=(date instanceof Date)?new Date(date):new Date(date);
+  ref.setHours(0,0,0,0);
+  const stats=getCompletionStats(ref);
+  return{date:ref.toDateString(),xp:S.todayXp||0,total:stats.total,completed:stats.completed,partial:stats.partial,completionPct:stats.completionPct,catStats:getCategorySnapshot(ref),missedHabits:getMissedHabitSnapshot(ref),note:((S.dailyNotes||{})[ref.toDateString()]||''),demo:false};
+}
+function getTodaySnapshot(){
+  return getSnapshotForDate(new Date());
+}
+function archiveTodayIfNeeded(){
+  if(!S.lastReset)return;
+  S.history=S.history||[];
+  if(S.history.some(h=>h.date===S.lastReset))return;
+  const snap=getSnapshotForDate(new Date(S.lastReset));
+  S.history.push({...snap,date:S.lastReset});
+  S.history=S.history.slice(-90);
+}
+function getHistoryEntry(dateStr){return dateStr===todayStr()?getTodaySnapshot():(S.history||[]).find(h=>h.date===dateStr);}
+function getRecentAverageXp(days){
+  const entries=[...(S.history||[]),getTodaySnapshot()].slice(-days);
+  if(!entries.length)return 0;
+  return Math.round(entries.reduce((sum,e)=>sum+(e.xp||0),0)/entries.length);
+}
+function getCumulativeHistoryXp(){return[...(S.history||[]),getTodaySnapshot()].reduce((sum,e)=>sum+(e.xp||0),0);}
+function getRecentEntries(days){
+  const entries=[];
+  for(let offset=days-1;offset>=0;offset--){
+    const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-offset);
+    const entry=getHistoryEntry(d.toDateString());
+    if(entry)entries.push(entry);
+  }
+  return entries;
+}
+function getHistoryStatFloorXp(){
+  const total=getCumulativeHistoryXp();
+  return{
+    strXp:Math.round(total*0.22),
+    intXp:Math.round(total*0.24),
+    vitXp:Math.round(total*0.2),
+    conXp:Math.round(total*0.16),
+    disXp:Math.round(total*0.18),
+  };
+}
+function syncLevelFromTotalXp(){
+  let total=S.totalXp||0;
+  let level=1;
+  while(total>=xpForLevel(level)){total-=xpForLevel(level);level++;}
+  S.level=level;S.xp=total;
+}
+function syncProgressFloorFromHistory(){
+  const historyTotal=getCumulativeHistoryXp();
+  const statFloor=getHistoryStatFloorXp();
+  if(historyTotal>(S.totalXp||0))S.totalXp=historyTotal;
+  S.stats.strXp=Math.max(S.stats.strXp||0,statFloor.strXp);
+  S.stats.intXp=Math.max(S.stats.intXp||0,statFloor.intXp);
+  S.stats.vitXp=Math.max(S.stats.vitXp||0,statFloor.vitXp);
+  S.stats.conXp=Math.max(S.stats.conXp||0,statFloor.conXp);
+  S.stats.disXp=Math.max(S.stats.disXp||0,statFloor.disXp);
+  syncLevelFromTotalXp();
+}
+function seedDemoProgressFromHistory(){
+  if(S.initialized||(S.totalXp||0)>0||S.level>1||(S.log||[]).length)return;
+  const demoXp=(S.history||[]).reduce((sum,h)=>sum+(h.xp||0),0);
+  if(!demoXp)return;
+  S.totalXp=demoXp;
+  S.stats.strXp=Math.round(demoXp*0.22);
+  S.stats.intXp=Math.round(demoXp*0.24);
+  S.stats.vitXp=Math.round(demoXp*0.2);
+  S.stats.conXp=Math.round(demoXp*0.16);
+  S.stats.disXp=Math.round(demoXp*0.18);
+  syncLevelFromTotalXp();
+}
+function seedHistoryDemo(){
+  if(S.initialized||(S.history||[]).length)return;
+  const demoNames=['Sleep before 12','Skipping','DSA problems','Medicine on time','No PMO','Deep work','Night hygiene'];
+  const demo=[];
+  for(let offset=27;offset>=1;offset--){
+    const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-offset);
+    const total=11+((offset+2)%4);
+    const completed=Math.max(0,Math.min(total,total-((offset*3)%5)));
+    const partial=Math.min(total-completed,offset%3);
+    const completionPct=total?Math.round((completed/total)*100):0;
+    const xp=(completed*18)+(partial*7)+((offset%4===0)?55:0);
+    const catStats={
+      str:{done:Math.max(0,2-(offset%2)),total:2},
+      int:{done:Math.max(0,3-((offset+1)%3)),total:3},
+      vit:{done:Math.max(0,2-((offset+2)%3)),total:2},
+      con:{done:Math.max(0,2-((offset+3)%3)),total:2},
+      dis:{done:Math.max(0,3-((offset+4)%4)),total:3},
+    };
+    const missedHabits=demoNames.filter((_,i)=>((offset+i)%5===0)).slice(0,3);
+    demo.push({date:d.toDateString(),xp,total,completed,partial,completionPct,catStats,missedHabits,demo:true});
+  }
+  S.history=demo;
+}
+
+function load(){
+  try{const sv=localStorage.getItem('slv5');if(sv)S=JSON.parse(sv);}catch(e){}
+  if(!S.initialized&&(!S.quests||!S.quests.length))S.quests=DEFAULT_QUESTS.map(q=>createQuest(q));
+  if(!S.achievements)S.achievements={};
+  if(!S.statLastActive)S.statLastActive={str:'',int:'',vit:'',con:'',dis:''};
+  if(!Array.isArray(S.history))S.history=[];
+  if(!S.dailyNotes||typeof S.dailyNotes!=='object')S.dailyNotes={};
+  if(typeof S.todayXp!=='number')S.todayXp=0;
+  if(Array.isArray(S.quests))S.quests.forEach((q,i)=>{if(typeof q.order!=='number')q.order=i+1;});
+  if(!S.profile)S.profile={name:'PETER',avatar:''};
+  if(!S.profile.name)S.profile.name='PETER';
+  if(typeof S.profile.avatar!=='string')S.profile.avatar='';
+  seedHistoryDemo();
+  seedDemoProgressFromHistory();
+  syncProgressFloorFromHistory();
+  _fScheduleDays=[1,2,3,4,5];
+  _eScheduleDays=[1,2,3,4,5];
+  renderDayChips('f');
+  renderDayChips('e');
+  toggleScheduleRow('f');
+  toggleScheduleRow('e');
+  // migrate old flat stats if needed
+  if(typeof S.stats.str==='number'){['str','int','vit','con','dis'].forEach(s=>{S.stats[s+'Xp']=(S.stats[s]||0)*40;delete S.stats[s];});}
+  checkDayReset();checkBossWeek();checkBonusDay();applyDecay();render();
+}
+function save(){S.initialized=true;localStorage.setItem('slv5',JSON.stringify(S));}
+function todayStr(){return new Date().toDateString();}
+function weekStr(){const d=new Date();const mon=new Date(d);mon.setDate(d.getDate()-((d.getDay()+6)%7));return mon.toDateString();}
+
+function checkDayReset(){
+  const t=todayStr();if(S.lastReset===t)return;
+  archiveTodayIfNeeded();
+  S.quests.forEach(q=>{
+    if(q.status==='full'||(q.type==='qty'&&q.qty>=(q.qtyMax||1)))q.streak=(q.streak||0)+1;
+    else q.streak=0;
+    resetQuestProgress(q);
+  });
+  S.bonusDone=false;S.lastReset=t;S.todayXp=0;save();
+}
+
+function checkBossWeek(){
+  const w=weekStr();if(S.bossWeek===w)return;
+  const b=BOSSES[Math.floor(Math.random()*BOSSES.length)];
+  S.bossWeek=w;S.bossName=b.name;S.bossDesc=b.desc;S.bossMaxHp=b.hp;S.bossHp=b.hp;S.bossReward=b.reward;S.bossDone=false;save();
+}
+
+function checkBonusDay(){
+  const t=todayStr();if(S.bonusDate===t)return;
+  const b=BONUS_POOL[Math.floor(Math.random()*BONUS_POOL.length)];
+  S.bonusQuest=b;S.bonusDate=t;S.bonusDone=false;save();
+}
+
+function applyDecay(){
+  const today=new Date();
+  ['str','int','vit','con','dis'].forEach(s=>{
+    const last=S.statLastActive[s];if(!last)return;
+    const diff=Math.floor((today-new Date(last))/(1000*60*60*24));
+    if(diff>=3){
+      const pts=xpToPoints(S.stats[s+'Xp']||0);
+      if(pts>50){const decayXp=(diff-2)*20;S.stats[s+'Xp']=Math.max(xpNeededForPoint(50),(S.stats[s+'Xp']||0)-decayXp);S.log=S.log||[];S.log.push(`[DECAY] ${s.toUpperCase()} -${decayXp} stat XP (${diff}d inactive)`);}
+    }
+  });save();
+}
+
+function getLevelScalar(){return Math.min(1+((S.level-1)*0.028),3.5);}
+
+function addXP(amount,stat,label,streakMult){
+  const mult=streakMult||1;
+  const final=Math.round(amount*mult*getLevelScalar());
+  S.xp+=final;S.totalXp=(S.totalXp||0)+final;
+  S.todayXp=(S.todayXp||0)+final;
+  const curPts=xpToPoints(S.stats[stat+'Xp']||0);
+  const statGain=Math.round(amount*(curPts<30?1:curPts<60?0.7:curPts<85?0.4:0.2));
+  const prevPts=curPts;
+  S.stats[stat+'Xp']=(S.stats[stat+'Xp']||0)+statGain;
+  S.statLastActive[stat]=todayStr();
+  checkStatMilestones(stat,prevPts,xpToPoints(S.stats[stat+'Xp']));
+  const t=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  S.log=S.log||[];S.log.push(`[${t}] +${final}xp${mult>1?' ('+mult.toFixed(1)+'x)':''} — ${label}`);
+  notify(`+${final} XP — ${label}`);
+  doLevelUp();checkAch();save();
+  return{xpAwarded:final,statXpAwarded:statGain};
+}
+
+function subtractXP(q,xpAmt,statXpAmt){
+  S.xp=Math.max(0,S.xp-xpAmt);
+  S.totalXp=Math.max(0,(S.totalXp||0)-xpAmt);
+  S.todayXp=Math.max(0,(S.todayXp||0)-xpAmt);
+  S.stats[q.stat+'Xp']=Math.max(0,(S.stats[q.stat+'Xp']||0)-statXpAmt);
+  const t=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  S.log=S.log||[];S.log.push(`[${t}] -${xpAmt}xp (undone) — ${q.name}`);
+  notify(`Undone: ${q.name} (-${xpAmt} XP)`);
+}
+
+function checkStatMilestones(stat,prev,now){
+  MILESTONES[stat].forEach(m=>{
+    if(prev<m.at&&now>=m.at){
+      showAch(`${m.badge} ${m.title} — ${stat.toUpperCase()} reached ${m.at}!`);
+      S.xp+=100;S.totalXp=(S.totalXp||0)+100;S.todayXp=(S.todayXp||0)+100;
+      S.log.push(`[MILESTONE] ${stat.toUpperCase()} ${m.at} — ${m.title}`);
+      doLevelUp();
+    }
+  });
+}
+
+function doLevelUp(){
+  let needed=xpForLevel(S.level);
+  while(S.xp>=needed){S.xp-=needed;S.level++;const rk=getRank(S.level);showLvlUp(`LEVEL ${S.level} — RANK ${rk.r}`);needed=xpForLevel(S.level);save();}
+}
+
+function checkAch(){
+  function unlock(id){
+    if(S.achievements[id])return;
+    const a=ACHIEVEMENTS.find(x=>x.id===id);if(!a)return;
+    S.achievements[id]=true;S.xp+=a.xp;S.totalXp=(S.totalXp||0)+a.xp;S.todayXp=(S.todayXp||0)+a.xp;
+    S.log.push(`[ACH] ${a.name} — +${a.xp}xp`);showAch(`${a.ico} ${a.name} — +${a.xp} XP`);doLevelUp();save();
+  }
+  if(S.log&&S.log.length>=1)unlock('first');
+  if(S.level>=10)unlock('lvl10');if(S.level>=25)unlock('lvl25');if(S.level>=50)unlock('lvl50');
+  if(S.bossDone)unlock('boss1');
+  if((S.totalBonusDone||0)>=7)unlock('bonus7');
+  ['str','int','vit','con','dis'].forEach(s=>{
+    const pts=xpToPoints(S.stats[s+'Xp']||0);
+    if(pts>=25)unlock('stat25');if(pts>=50)unlock('stat50');if(pts>=100)unlock('stat100');
+  });
+  S.quests.forEach(q=>{
+    if((q.streak||0)>=3)unlock('streak3');if((q.streak||0)>=7)unlock('streak7');if((q.streak||0)>=30)unlock('streak30');
+    if(q.name.toLowerCase().includes('pmo')&&(q.streak||0)>=7)unlock('nopmo7');
+  });
+  if(S.quests.length>0&&S.quests.every(q=>q.status==='full'||(q.type==='qty'&&q.qty>=(q.qtyMax||1))))unlock('allday');
+}
+
+function render(){updateCard();renderProfile();renderStats();renderDailySummary();renderWeeklyInsight();renderHistoryCalendar();renderTodayFocus();renderQuests();renderBonus();renderBoss();renderAch();renderLog();}
+
+function renderProfile(){
+  const name=(S.profile&&S.profile.name)||'PETER';
+  const avatar=(S.profile&&S.profile.avatar)||'';
+  const heroImg=document.getElementById('hero-avatar-img');
+  const heroFallback=document.getElementById('hero-avatar-fallback');
+  const profImg=document.getElementById('profile-avatar-img');
+  const profFallback=document.getElementById('profile-avatar-fallback');
+  document.getElementById('profile-name-input').value=name;
+  document.getElementById('pname').textContent=name.toUpperCase();
+  if(avatar){
+    heroImg.src=avatar;heroImg.style.display='block';heroFallback.style.display='none';
+    profImg.src=avatar;profImg.style.display='block';profFallback.style.display='none';
+  }else{
+    heroImg.style.display='none';heroFallback.style.display='block';
+    profImg.style.display='none';profFallback.style.display='block';
+  }
+}
+
+function saveProfileName(){
+  const input=document.getElementById('profile-name-input');
+  const name=(input.value||'').trim().slice(0,24);
+  S.profile=S.profile||{};
+  S.profile.name=name||'PETER';
+  commitChanges();
+  notify(`Profile updated: ${S.profile.name}`);
+}
+
+function handleProfilePhoto(e){
+  const file=e.target.files&&e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    S.profile=S.profile||{};
+    S.profile.avatar=ev.target.result||'';
+    // Force immediate DOM update without waiting for full render cycle
+    ['hero-avatar-img','profile-avatar-img'].forEach(id=>{
+      const img=document.getElementById(id);
+      if(img){img.src=S.profile.avatar;img.style.display='block';}
+    });
+    document.getElementById('hero-avatar-fallback').style.display='none';
+    document.getElementById('profile-avatar-fallback').style.display='none';
+    commitChanges();
+    notify('Profile image updated');
+  };
+  reader.readAsDataURL(file);
+  e.target.value='';
+}
+
+function clearProfilePhoto(){
+  S.profile=S.profile||{};
+  S.profile.avatar='';
+  commitChanges();
+  notify('Profile image cleared');
+}
+
+function renderDailySummary(){
+  const el=document.getElementById('daily-summary');if(!el)return;
+  const stats=getCompletionStats();
+  const totalXp=S.todayXp||0;
+  const avgXp=getRecentAverageXp(7);
+  el.innerHTML=`
+    <div class="summary-grid">
+      <div class="summary-box"><div class="summary-k">COMPLETE</div><div class="summary-v">${stats.completed}/${stats.total||0}</div><div class="summary-sub">${stats.completionPct}% clear</div></div>
+      <div class="summary-box"><div class="summary-k">PARTIAL</div><div class="summary-v">${stats.partial}</div><div class="summary-sub">${stats.remaining} remaining</div></div>
+      <div class="summary-box"><div class="summary-k">TODAY XP</div><div class="summary-v">${totalXp}</div><div class="summary-sub">all sources</div></div>
+      <div class="summary-box"><div class="summary-k">7D AVG XP</div><div class="summary-v">${avgXp}</div><div class="summary-sub">recent momentum</div></div>
+    </div>
+    <div class="summary-bar"><div class="summary-fill" style="width:${stats.completionPct}%"></div></div>`;
+}
+function renderWeeklyInsight(){
+  const el=document.getElementById('weekly-insight');if(!el)return;
+  const entries=getRecentEntries(7);
+  const totalXp=entries.reduce((sum,e)=>sum+(e.xp||0),0);
+  const avgCompletion=entries.length?Math.round(entries.reduce((sum,e)=>sum+(e.completionPct||0),0)/entries.length):0;
+  const perfect=entries.filter(e=>(e.completionPct||0)>=100).length;
+  const active=entries.filter(e=>(e.xp||0)>0).length;
+  const best=entries.reduce((top,e)=>((e.xp||0)>(top.xp||0)?e:top),{xp:-1,date:''});
+  const bestLabel=best&&best.date?`${new Date(best.date).toLocaleDateString([],{weekday:'short'})} · ${best.xp||0} XP`:'No data yet';
+  el.innerHTML=`
+    <div class="insight-grid">
+      <div class="insight-box"><div class="insight-k">WEEK XP</div><div class="insight-v">${totalXp}</div><div class="insight-sub">${active}/7 active days</div></div>
+      <div class="insight-box"><div class="insight-k">AVG CLEAR</div><div class="insight-v">${avgCompletion}%</div><div class="insight-sub">${perfect} perfect days this week</div></div>
+      <div class="insight-box"><div class="insight-k">BEST DAY</div><div class="insight-v">${best.xp>0?best.xp:0}</div><div class="insight-sub">${bestLabel}</div></div>
+      <div class="insight-box"><div class="insight-k">MOMENTUM</div><div class="insight-v">${avgCompletion>=80?'STRONG':avgCompletion>=50?'STEADY':'RECOVER'}</div><div class="insight-sub">${totalXp>=getRecentAverageXp(7)*7?'above':'near'} recent pace</div></div>
+    </div>`;
+}
+function renderDayNote(){
+  const input=document.getElementById('today-note-input');if(!input)return;
+  const key=_selectedDateKey||todayStr();
+  const note=((S.dailyNotes||{})[key]||'');
+  if(document.activeElement!==input)input.value=note;
+  const isPast=key!==todayStr();
+  document.getElementById('today-note-meta').textContent=note?`Saved for ${key}`:(isPast?'No note for this day.':'Stored with today\'s record.');
+}
+function appendTodayNote(text){
+  const input=document.getElementById('today-note-input');if(!input)return;
+  const current=(input.value||'').trim();
+  input.value=current?`${current} · ${text}`:text;
+}
+function saveTodayNote(){
+  S.dailyNotes=S.dailyNotes||{};
+  const key=_selectedDateKey||todayStr();
+  const input=document.getElementById('today-note-input');
+  S.dailyNotes[key]=(input.value||'').trim();
+  commitChanges();
+  notify(S.dailyNotes[key]?'Note saved':'Note cleared');
+}
+
+function renderHistoryCalendar(){
+  const el=document.getElementById('history-calendar');if(!el)return;
+  document.getElementById('history-meta-label').textContent=_historyExpanded?'LAST 28 DAYS':'LAST 7 DAYS';
+  document.getElementById('history-toggle-btn').textContent=_historyExpanded?'COLLAPSE':'EXPAND';
+  const days=['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  const range=_historyExpanded?28:7;
+  let html='<div class="history-grid">';
+  for(let offset=range-1;offset>=0;offset--){
+    const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-offset);
+    const key=d.toDateString();
+    const entry=getHistoryEntry(key);
+    const pct=entry?entry.completionPct:0;
+    const state=!entry?'none':pct>=100?'perfect':pct>=70?'strong':pct>0?'progress':'none';
+    const border=state==='perfect'?'rgba(255,215,107,.42)':state==='strong'?'rgba(75,227,160,.34)':state==='progress'?'rgba(96,184,255,.34)':'rgba(72,102,165,.16)';
+    const bg=state==='perfect'?'linear-gradient(180deg,rgba(24,30,58,.82),rgba(10,16,30,.58))':state==='strong'?'linear-gradient(180deg,rgba(14,28,44,.78),rgba(8,16,28,.52))':state==='progress'?'linear-gradient(180deg,rgba(12,24,46,.72),rgba(8,14,28,.48))':'linear-gradient(180deg,rgba(10,20,42,.46),rgba(8,14,28,.32))';
+    const cls=`history-day state-${state}${entry?'':' dim'}${offset===0?' today':''}`;
+    html+=`<div class="${cls}" style="border-color:${border};background:${bg}" onclick="openHistoryDay(${d.getTime()})"><div><div class="history-dow">${days[d.getDay()]}</div><div class="history-num">${d.getDate()}</div></div><div>${entry?`<div class="history-xp">${entry.xp} XP</div><div class="history-rate">${entry.completed}/${entry.total} clear</div>`:`<div class="history-xp">NO DATA</div><div class="history-rate">0%</div>`}</div></div>`;
+  }
+  html+='</div><div class="history-legend"><span class="legend-chip">Gold = perfect clear</span><span class="legend-chip">Green = strong progress</span><span class="legend-chip">Blue = some progress</span><span class="legend-chip">Dim = no progress</span></div>';
+  el.innerHTML=html;
+}
+function toggleHistoryRange(){_historyExpanded=!_historyExpanded;renderHistoryCalendar();}
+function toggleRemainingOnly(){_showRemainingOnly=!_showRemainingOnly;renderQuests();}
+function toggleCategory(cat){_collapsedCats[cat]=!_collapsedCats[cat];renderQuests();}
+const DAY_LABELS=['S','M','T','W','T','F','S'];
+let _fScheduleDays=[1,2,3,4,5],_eScheduleDays=[1,2,3,4,5];
+function renderDayChips(prefix){
+  const days=prefix==='f'?_fScheduleDays:_eScheduleDays;
+  const el=document.getElementById(prefix+'day-chips');if(!el)return;
+  el.innerHTML=DAY_LABELS.map((d,i)=>`<button class="day-chip ${days.includes(i)?'on':''}" onclick="toggleScheduleDay('${prefix}',${i})">${d}</button>`).join('');
+}
+function toggleScheduleDay(prefix,day){
+  const ref=prefix==='f'?_fScheduleDays:_eScheduleDays;
+  const idx=ref.indexOf(day);
+  if(idx>=0)ref.splice(idx,1);else ref.push(day);
+  ref.sort((a,b)=>a-b);
+  renderDayChips(prefix);
+}
+function toggleScheduleRow(prefix){
+  const type=document.getElementById(prefix+'sched').value;
+  document.getElementById(prefix+'day-row').style.display=type==='custom'?'flex':'none';
+  if(type!=='custom'){
+    if(prefix==='f')_fScheduleDays=getScheduleDays(type,[]);
+    else _eScheduleDays=getScheduleDays(type,[]);
+  }
+  renderDayChips(prefix);
+}
+
+function renderTodayFocus(){
+  const el=document.getElementById('today-focus');if(!el)return;
+  const currentSlot=getCurrentSlot();
+  const incomplete=S.quests.filter(q=>{
+    if(!isQuestDueToday(q))return false;
+    if(q.type==='qty')return (q.qty||0)<(q.qtyMax||1);
+    return q.status!=='full';
+  }).sort((a,b)=>{
+    const pr={critical:300,high:180,normal:0};
+    const sw=(slot)=>slot===currentSlot?120:slot==='anytime'?60:0;
+    const overdueBoost=(q)=>isQuestOverdue(q)?260:0;
+    const aw=(pr[a.priority||'normal']||0)+sw(a.timeSlot||'anytime')+overdueBoost(a)+a.xp;
+    const bw=(pr[b.priority||'normal']||0)+sw(b.timeSlot||'anytime')+overdueBoost(b)+b.xp;
+    return bw-aw;
+  });
+  if(!incomplete.length){
+    el.innerHTML=`<div class="focus-empty">All tracked quests are complete for now. Use the history panel for review or register a new gate below.</div>`;
+    return;
+  }
+  const cards=incomplete.slice(0,4).map(q=>{
+    const tier=q.tier||'D';
+    const pr=q.priority||'normal';
+    const desc=q.desc||'Tap to update progress.';
+    const xpStr=q.type==='qty'?`${q.qty||0}/${q.qtyMax||1} ${q.qtyUnit}`:q.type==='minmax'?(q.status==='min'?'MIN CLEARED':'READY'):q.status==='none'?'READY':'IN PROGRESS';
+    const overdue=isQuestOverdue(q);
+    const action=q.type==='qty'
+      ?`<div class="focus-action"><button class="focus-btn alt" onclick="adjQty(${q.id},-1)">-1</button><button class="focus-btn" onclick="adjQty(${q.id},1)">+1</button></div>`
+      :`<div class="focus-action"><button class="focus-btn" onclick="cycleQ(${q.id})">${q.type==='minmax'?(q.status==='min'?'ADVANCE':'CHECK'):(q.status==='none'?'CHECK':'UNDO')}</button></div>`;
+    return`<div class="focus-card ${overdue?'overdue':''}"><div class="focus-top"><div><div class="focus-name"><span class="qtier qtier-${tier}">${tier}</span>${q.name}${getPriorityTag(q)}${getSlotTag(q)}${getOverdueTag(q)}</div><div class="focus-desc">${overdue?'Past its ideal window · ':''}${desc}</div></div><div class="focus-xp">${q.xp} XP</div></div><div class="focus-meta">${xpStr}</div>${action}</div>`;
+  }).join('');
+  el.innerHTML=`<div class="focus-head"><div class="focus-title">TODAY FOCUS</div><div class="focus-meta">${currentSlot.toUpperCase()} · ${incomplete.length} due</div></div><div class="focus-grid">${cards}</div>`;
+}
+
+function openHistoryDay(ts){
+  const dateStr=new Date(ts).toDateString();
+  const entry=getHistoryEntry(dateStr);
+  if(!entry)return;
+  const total=entry.total||0;
+  const partial=entry.partial||0;
+  const remaining=Math.max(0,total-(entry.completed||0)-partial);
+  const tag=entry.demo?'SIMULATED ARCHIVE':'DAY RECORD';
+  const note=entry.note?`<div class="history-note">${entry.note}</div>`:'';
+  document.getElementById('history-modal-content').innerHTML=`
+    <div class="history-modal-title">${dateStr.toUpperCase()}</div>
+    <div class="history-modal-sub">${tag} · ${entry.completionPct||0}% completion</div>
+    <div class="history-break-grid">
+      <div class="history-break-box"><div class="history-break-k">TOTAL XP</div><div class="history-break-v">${entry.xp||0}</div></div>
+      <div class="history-break-box"><div class="history-break-k">COMPLETE</div><div class="history-break-v">${entry.completed||0}/${total}</div></div>
+      <div class="history-break-box"><div class="history-break-k">PARTIAL</div><div class="history-break-v">${partial}</div></div>
+      <div class="history-break-box"><div class="history-break-k">REMAINING</div><div class="history-break-v">${remaining}</div></div>
+    </div>
+    <div class="history-break-note">This panel gives a quick breakdown of that day's quest momentum. Gold days are full clears, green days are strong runs, and blue days show partial progress.</div>${note}`;
+  document.getElementById('history-modal').classList.add('show');
+}
+function closeHistoryModal(e){if(e.target===document.getElementById('history-modal'))document.getElementById('history-modal').classList.remove('show');}
+
+function updateCard(){
+  const rk=getRank(S.level);const needed=xpForLevel(S.level);const pct=Math.min((S.xp/needed)*100,100);
+  document.getElementById('xpbar').style.width=pct+'%';
+  document.getElementById('pxp').textContent=S.xp;document.getElementById('pxpn').textContent=needed;
+  document.getElementById('plvl').textContent=S.level;
+  document.getElementById('prank').textContent=rk.r;document.getElementById('prank').style.color=rk.col;document.getElementById('prank').style.textShadow=`0 0 24px ${rk.col}99`;
+  document.getElementById('pclass').textContent='◈ '+rk.cls.toUpperCase();
+  document.getElementById('totalxp').textContent=S.totalXp||0;
+  const title=getHighestTitle(S.stats);
+  document.getElementById('ptitle').textContent=title?'◈ '+title.toUpperCase():'';
+}
+
+function renderStats(){
+  const today=new Date();
+  ['str','int','vit','con','dis'].forEach(s=>{
+    const pts=xpToPoints(S.stats[s+'Xp']||0);
+    const sid={str:'s',int:'i',vit:'v',con:'c',dis:'d'}[s];
+    document.getElementById('s'+sid).textContent=pts;document.getElementById('b'+sid).style.width=pts+'%';
+    const{badge}=getStatBadge(s,pts);document.getElementById('badge-'+s).textContent=`${badge} · ${getStatIdentityLabel(s)}`;
+    const trend=getStatWeeklyTrend(s);
+    document.getElementById('trend-'+s).textContent=trend==='up'?'UP THIS WEEK':trend==='steady'?'STEADY THIS WEEK':'QUIET THIS WEEK';
+    const last=S.statLastActive[s];const decayEl=document.getElementById('decay-'+s);
+    if(last&&pts>50){const diff=Math.floor((today-new Date(last))/(1000*60*60*24));decayEl.textContent=diff>=2?`⚠ ${diff}d inactive`:'';}
+    else decayEl.textContent='';
+  });
+}
+
+function openStat(s){
+  const pts=xpToPoints(S.stats[s+'Xp']||0);const statXp=S.stats[s+'Xp']||0;
+  const meta={str:{col:'#ff6b35',ico:'⚔️',nm:'Strength'},int:{col:'#3070ff',ico:'🧠',nm:'Intelligence'},vit:{col:'#00e676',ico:'💚',nm:'Vitality'},con:{col:'#ff1744',ico:'🔒',nm:'Self Control'},dis:{col:'#ffd740',ico:'⚡',nm:'Discipline'}}[s];
+  const nextCost=costForNextPoint(pts);const xpInto=statXp-xpNeededForPoint(pts);const pctNext=pts>=100?100:Math.min((xpInto/nextCost)*100,100);
+  const today=new Date();const last=S.statLastActive[s];const daysDiff=last?Math.floor((today-new Date(last))/(1000*60*60*24)):0;
+  const decayWarn=pts>50&&daysDiff>=2?`<div class="decay-warn">⚠ ${daysDiff} days inactive. Decay starts after 3 days above 50.</div>`:'';
+  const msHtml=MILESTONES[s].map(m=>{const r=pts>=m.at;return`<div class="smo-ms ${r?'reached':''}"><div class="smo-ms-badge">${m.badge}</div><div class="smo-ms-val">${m.at}</div><div class="smo-ms-title">${m.title}</div></div>`;}).join('');
+  document.getElementById('smo-content').innerHTML=`
+    <div class="smo-title" style="color:${meta.col}">${meta.ico} ${meta.nm}</div>
+    <div class="smo-subtitle">STAT PROGRESSION — CAP: 100</div>
+    <div class="smo-val" style="color:${meta.col}">${pts}<span style="font-size:16px;color:#3a5080"> / 100</span></div>
+    <div class="smo-bar-bg"><div class="smo-bar-fill" style="width:${pts}%;background:${meta.col}"></div></div>
+    <div class="smo-next">${pts>=100?'MAX STAT REACHED — LEGENDARY':`Next point: ${Math.floor(xpInto)}/${nextCost} stat XP (${Math.round(pctNext)}%)<br>Zone: ${pts<30?'🟢 Easy':pts<60?'🟡 Moderate':pts<85?'🟠 Hard':'🔴 Very Hard'}`}</div>
+    <div style="font-size:10px;color:#3a5080;margin-bottom:10px;letter-spacing:1px;">MILESTONES</div>
+    <div class="smo-milestones">${msHtml}</div>${decayWarn}`;
+  document.getElementById('stat-modal').classList.add('show');
+}
+function closeStat(e){if(e.target===document.getElementById('stat-modal'))document.getElementById('stat-modal').classList.remove('show');}
+function getStatMeta(s){return{str:{col:'#ff6b35',ico:'⚔️',nm:'STRENGTH'},int:{col:'#3070ff',ico:'🧠',nm:'INTELLIGENCE'},vit:{col:'#00e676',ico:'💚',nm:'VITALITY'},con:{col:'#ff1744',ico:'🔒',nm:'SELF CONTROL'},dis:{col:'#ffd740',ico:'⚡',nm:'DISCIPLINE'}}[s];}
+function getPriorityTag(q){
+  const pr=q.priority||'normal';
+  if(pr==='normal')return'';
+  const label=pr==='critical'?'CRITICAL':'HIGH';
+  return`<span class="priority-tag priority-${pr}">${label}</span>`;
+}
+
+function renderQuests(){
+  const cats={str:[],int:[],vit:[],con:[],dis:[]};
+  S.quests.forEach(q=>{
+    if(!isQuestDueToday(q))return;
+    const done=q.type==='qty'?(q.qty>=(q.qtyMax||1)):(q.status==='full');
+    if(_showRemainingOnly&&done)return;
+    cats[q.stat].push(q);
+  });
+  document.getElementById('remaining-toggle-btn').classList.toggle('on',_showRemainingOnly);
+  document.getElementById('remaining-toggle-btn').textContent=_showRemainingOnly?'SHOW ALL':'REMAINING ONLY';
+  const scalar=getLevelScalar();let html='';
+  ['str','int','vit','con','dis'].forEach(cat=>{
+    if(!cats[cat].length)return;
+    cats[cat].sort((a,b)=>(a.order??0)-(b.order??0)||a.id-b.id);
+    const m=getStatMeta(cat);
+    const baseMax=cats[cat].reduce((a,q)=>a+(q.type==='qty'?q.xp*(q.qtyMax||1):q.xp),0);
+    const trueMax=Math.round(baseMax*scalar);
+    const scaleNote=scalar>1.05?` <span style="color:#3a6040;font-size:8px">(base ${baseMax} ×${scalar.toFixed(2)})</span>`:'';
+    const collapsed=_collapsedCats[cat];
+    html+=`<div class="qcat"><div class="qcath"><span>${m.ico}</span><span class="qcatn" style="color:${m.col}">${m.nm}</span><span class="qcatx">MAX ~${trueMax} XP/DAY${scaleNote}</span><button class="qcat-toggle" onclick="toggleCategory('${cat}')">${collapsed?'EXPAND':'COLLAPSE'}</button></div>`;
+    if(collapsed){html+='</div>';return;}
+    cats[cat].forEach(q=>{
+      const tier=q.tier||'D';
+      const pr=q.priority||'normal';
+      const fullCls=q.type==='qty'?(q.qty>=(q.qtyMax||1)?'full':q.qty>0?'min':''):(q.status==='full'?'full':q.status==='min'?'min':'');
+      const ck=q.type==='qty'?(q.qty>=(q.qtyMax||1)?'✓':q.qty>0?q.qty:''):(q.status==='full'?'✓':q.status==='min'?'◑':'');
+      const streak=q.streak||0;const mult=Math.min(1+(streak*0.08),1.5);
+      const multStr=mult>1?`<div class="qmult">×${mult.toFixed(1)} streak</div>`:'';
+      const streakStr=streak>0?`<div class="qstreak">🔥 ${streak}d streak</div>`:'';
+      const xpStr=q.type==='qty'?`${q.xp}/unit · max ${q.xp*(q.qtyMax||1)}`:q.type==='minmax'?`${q.minXp}/${q.xp} XP`:`${q.xp} XP`;
+      const scaleStr=scalar>1.05?`<div class="xp-scaled">×${scalar.toFixed(2)} lv</div>`:'';
+      let qtyHtml='';
+      if(q.type==='qty')qtyHtml=`<div class="qty-row" onclick="event.stopPropagation()"><button class="qty-btn" onclick="adjQty(${q.id},-1)">−</button><span class="qty-val">${q.qty}</span><button class="qty-btn" onclick="adjQty(${q.id},1)">+</button><span class="qty-label">/ ${q.qtyMax||1} ${q.qtyUnit}</span></div>`;
+      html+=`<div class="qi ${fullCls}" id="quest-${q.id}" onclick="cycleQ(${q.id})" ondragover="allowQuestDrop(event,${q.id})" ondragleave="clearQuestDrop(${q.id})" ondrop="dropQuestBefore(event,${q.id})">
+        <div class="qchk">${ck}</div>
+        <div class="qdrag" draggable="true" ondragstart="startQuestDrag(event,${q.id})" onclick="event.stopPropagation()">⋮</div>
+        <div class="qcon">
+          <div class="qname"><span class="qtier qtier-${tier}">${tier}</span>${q.name}${getPriorityTag(q)}${getSlotTag(q)}</div>
+          <div class="qdesc">${q.desc}${q.type==='minmax'?' · once=min, twice=full':''}</div>
+          ${qtyHtml}
+          <div class="priority-rail" onclick="event.stopPropagation()"><button class="priority-pill ${pr==='normal'?'on-normal':''}" onclick="setQuestPriority(${q.id},'normal')">N</button><button class="priority-pill ${pr==='high'?'on-high':''}" onclick="setQuestPriority(${q.id},'high')">H</button><button class="priority-pill ${pr==='critical'?'on-critical':''}" onclick="setQuestPriority(${q.id},'critical')">C</button></div>
+          <button class="edit-btn" onclick="event.stopPropagation();editQ(${q.id})">EDIT</button><button class="retire-btn" onclick="event.stopPropagation();retireQ(${q.id})">◈ RETIRE</button>
+        </div>
+        <div class="qright"><div class="qxp">${xpStr}</div>${scaleStr}${streakStr}${multStr}</div>
+      </div>`;
+    });
+    html+='</div>';
+  });
+  document.getElementById('qlist').innerHTML=html;
+}
+
+function cycleQ(id){
+  const q=S.quests.find(x=>x.id==id);if(!q||q.type==='qty')return;
+  const mult=Math.min(1+((q.streak||0)*0.08),1.5);
+  if(q.type==='minmax'){
+    if(q.status==='none'){const r=addXP(q.minXp,q.stat,q.name+' (min)',mult);q.status='min';q._xpMin=r.xpAwarded;q._statXpMin=r.statXpAwarded;q._xpFull=0;q._statXpFull=0;showXpPopup(q.name+' (min)',r.xpAwarded,q.stat,q.tier,false);}
+    else if(q.status==='min'){const r=addXP(q.xp-q.minXp,q.stat,q.name+' (full)',mult);q.status='full';q._xpFull=r.xpAwarded;q._statXpFull=r.statXpAwarded;showXpPopup(q.name,r.xpAwarded,q.stat,q.tier,false);}
+    else{subtractXP(q,q._xpFull||0,q._statXpFull||0);subtractXP(q,q._xpMin||0,q._statXpMin||0);resetQuestProgress(q);commitChanges();return;}
+  }else{
+    if(q.status==='none'){const r=addXP(q.xp,q.stat,q.name,mult);q.status='full';q._xpAwarded=r.xpAwarded;q._statXpAwarded=r.statXpAwarded;showXpPopup(q.name,r.xpAwarded,q.stat,q.tier,false);}
+    else{subtractXP(q,q._xpAwarded||0,q._statXpAwarded||0);resetQuestProgress(q);commitChanges();return;}
+  }
+  commitChanges();
+}
+
+function adjQty(id,delta){
+  const q=S.quests.find(x=>x.id==id);if(!q||q.type!=='qty')return;
+  const prev=q.qty;q.qty=Math.max(0,Math.min(q.qtyMax||5,(q.qty||0)+delta));
+  if(q.qty>prev){
+    const mult=Math.min(1+((q.streak||0)*0.08),1.5);
+    const r=addXP(q.xp,q.stat,`${q.name} (${q.qty}/${q.qtyMax})`,mult);
+    q._unitXp=q._unitXp||[];q._unitStatXp=q._unitStatXp||[];
+    q._unitXp.push(r.xpAwarded);q._unitStatXp.push(r.statXpAwarded);
+    q.totalQty=(q.totalQty||0)+1;
+    showXpPopup(`${q.name} (${q.qty}/${q.qtyMax})`,r.xpAwarded,q.stat,q.tier,false);
+  }else if(q.qty<prev){
+    const lastXp=(q._unitXp||[]).pop()||0;const lastStatXp=(q._unitStatXp||[]).pop()||0;
+    subtractXP(q,lastXp,lastStatXp);commitChanges();return;
+  }
+  commitChanges();
+}
+function startQuestDrag(e,id){_dragQuestId=id;e.dataTransfer.effectAllowed='move';}
+function allowQuestDrop(e,id){if(_dragQuestId&&_dragQuestId!==id){e.preventDefault();document.getElementById('quest-'+id)?.classList.add('drag-over');}}
+function clearQuestDrop(id){document.getElementById('quest-'+id)?.classList.remove('drag-over');}
+function dropQuestBefore(e,id){
+  e.preventDefault();
+  clearQuestDrop(id);
+  const dragged=S.quests.find(x=>x.id==_dragQuestId);
+  const target=S.quests.find(x=>x.id==id);
+  if(!dragged||!target||dragged.id===target.id||dragged.stat!==target.stat){_dragQuestId=null;return;}
+  const group=S.quests.filter(x=>x.stat===dragged.stat).sort((a,b)=>(a.order??0)-(b.order??0)||a.id-b.id);
+  const draggedIdx=group.findIndex(x=>x.id===dragged.id);
+  const targetIdx=group.findIndex(x=>x.id===target.id);
+  if(draggedIdx<0||targetIdx<0){_dragQuestId=null;return;}
+  const [item]=group.splice(draggedIdx,1);
+  const insertIdx=group.findIndex(x=>x.id===target.id);
+  group.splice(insertIdx,0,item);
+  group.forEach((q,idx)=>{q.order=idx+1;});
+  _dragQuestId=null;
+  commitChanges();
+}
+
+function setQuestPriority(id,priority){
+  const q=S.quests.find(x=>x.id==id);if(!q)return;
+  q.priority=priority;
+  commitChanges();
+}
+
+let _editId=null;
+function editQ(id){
+  const q=S.quests.find(x=>x.id==id);if(!q)return;
+  _editId=id;
+  document.getElementById('en').value=q.name||'';
+  document.getElementById('ed').value=q.desc||'';
+  document.getElementById('estat').value=q.stat||'str';
+  document.getElementById('etype').value=q.type||'full';
+  document.getElementById('eslot').value=q.timeSlot||'anytime';
+  document.getElementById('esched').value=q.scheduleType||'daily';
+  document.getElementById('epriority').value=q.priority||'normal';
+  document.getElementById('etier').value=q.tier||'D';
+  document.getElementById('eqtymax').value=q.qtyMax||'';
+  document.getElementById('eqtyunit').value=q.qtyUnit||'';
+  _eScheduleDays=[...getScheduleDays(q.scheduleType||'daily',q.scheduleDays||[])];
+  renderDayChips('e');
+  toggleScheduleRow('e');
+  document.getElementById('eqty-row').style.display=(q.type==='qty')?'flex':'none';
+  document.getElementById('etype').onchange=function(){document.getElementById('eqty-row').style.display=this.value==='qty'?'flex':'none';};
+  document.getElementById('edit-modal').classList.add('show');
+}
+function closeEditModal(e){
+  if(!e||e.target===document.getElementById('edit-modal'))document.getElementById('edit-modal').classList.remove('show');
+}
+function saveQuestEdit(){
+  const q=S.quests.find(x=>x.id==_editId);if(!q){closeEditModal();return;}
+  const name=document.getElementById('en').value.trim();if(!name)return;
+  const type=document.getElementById('etype').value||'full';
+  const tier=document.getElementById('etier').value||'D';
+  const xp=getTierXP(tier);
+  q.name=name;
+  q.desc=document.getElementById('ed').value.trim();
+  q.stat=document.getElementById('estat').value||q.stat;
+  q.type=type;
+  q.timeSlot=document.getElementById('eslot').value||'anytime';
+  q.scheduleType=document.getElementById('esched').value||'daily';
+  q.scheduleDays=getScheduleDays(q.scheduleType,_eScheduleDays);
+  q.priority=document.getElementById('epriority').value||'normal';
+  q.tier=tier;
+  q.xp=xp;
+  q.baseXp=xp;
+  q.minXp=type==='minmax'?Math.floor(xp/2):0;
+  if(type==='qty'){
+    q.qtyMax=parseInt(document.getElementById('eqtymax').value)||Math.max(2,q.qtyMax||3);
+    q.qtyUnit=document.getElementById('eqtyunit').value.trim()||q.qtyUnit||'units';
+    q.qty=Math.min(q.qty||0,q.qtyMax);
+  }else{
+    q.qty=0;q.qtyMax=0;q.qtyUnit='';
+    q._unitXp=[];q._unitStatXp=[];
+  }
+  if(type==='full'&&q.status==='min')q.status='none';
+  closeEditModal();
+  commitChanges();
+  notify(`Quest updated: ${q.name}`);
+}
+
+let _retireId=null,_replaceTier='D',_retireOriginalStat='int';
+function retireQ(id){
+  const q=S.quests.find(x=>x.id==id);if(!q)return;
+  _retireId=id;_replaceTier='D';_retireOriginalStat=q.stat;
+  document.getElementById('rstat').value=q.stat;
+  document.getElementById('rn').value='';document.getElementById('rd').value='';
+  document.getElementById('rqtymax').value='';document.getElementById('rqtyunit').value='';
+  document.getElementById('rtype').value='full';document.getElementById('rqty-row').style.display='none';
+  document.getElementById('rtype').onchange=function(){document.getElementById('rqty-row').style.display=this.value==='qty'?'flex':'none';};
+  selReplaceTier('D');
+  const tier=q.tier||'D';
+  document.getElementById('retire-old-info').innerHTML=`<div class="retire-old-name"><span class="qtier qtier-${tier}">${tier}</span> ${q.name}</div><div class="retire-old-meta">${getStatMeta(q.stat).ico} ${getStatMeta(q.stat).nm} · ${q.xp} XP · 🔥 ${q.streak||0} day streak</div>`;
+  document.getElementById('retire-sub').textContent=`You've outgrown "${q.name}". Retire it and optionally register a harder replacement.`;
+  document.getElementById('retire-modal').classList.add('show');
+}
+function selReplaceTier(t){
+  _replaceTier=t;
+  document.querySelectorAll('#rtier-sel .tier-opt').forEach(el=>{el.className='tier-opt'+(el.dataset.tier===t?' sel-'+t:'');});
+  const ti=TIERS[t];document.getElementById('rtier-hint').textContent=`${ti.label} — ${ti.hint} · ${ti.xp} XP`;
+}
+function closeRetireModal(){document.getElementById('retire-modal').classList.remove('show');}
+function confirmRetire(withReplacement){
+  const q=S.quests.find(x=>x.id==_retireId);if(!q){closeRetireModal();return;}
+  let newQuest=null;
+  if(withReplacement){
+    const name=document.getElementById('rn').value.trim();
+    if(name){
+      const statEl=document.getElementById('rstat');
+      const stat=(statEl&&['str','int','vit','con','dis'].includes(statEl.value))?statEl.value:_retireOriginalStat;
+      const desc=document.getElementById('rd').value.trim();
+      const type=document.getElementById('rtype').value||'full';
+      const qtyMax=parseInt(document.getElementById('rqtymax').value)||3;
+      const qtyUnit=document.getElementById('rqtyunit').value.trim()||'units';
+      const tier=_replaceTier||'D';
+      newQuest=createQuest({name,desc,stat,tier,type,qtyMax,qtyUnit});
+    }
+  }
+  S.quests=S.quests.filter(x=>x.id!=_retireId);
+  S.log=S.log||[];S.log.push(`[RETIRED] ${q.name} [${q.tier||'D'}-Rank]`);
+  if(newQuest){S.quests.push(newQuest);S.log.push(`[NEW GATE] ${newQuest.name} [${newQuest.tier}-Rank]`);notify(`Retired "${q.name}" → "${newQuest.name}" [${newQuest.tier}]`);}
+  else notify('Quest retired: '+q.name);
+  closeRetireModal();commitChanges();
+}
+
+function renderBonus(){
+  const bq=S.bonusQuest;if(!bq){document.getElementById('bqsec').innerHTML='<div style="color:#2a3a58;padding:20px;">No bonus quest today.</div>';return;}
+  const m=getStatMeta(bq.stat);
+  document.getElementById('bqsec').innerHTML=`<div class="bq ${S.bonusDone?'bqdone':''}" onclick="completeBonus()"><div class="bqt">◈ DAILY BONUS QUEST — ${todayStr().toUpperCase()}</div><div class="bqname">${m.ico} ${bq.name} ${S.bonusDone?'✓':''}</div><div class="bqdesc">${bq.desc}</div><div class="bqxp">⚡ ${bq.xp} BONUS XP${S.bonusDone?' — CLAIMED':' — TAP TO CLAIM'}</div></div><div style="font-size:11px;color:#2a3a58;margin-top:8px;">New bonus quest every day.</div>`;
+}
+function completeBonus(){if(S.bonusDone)return;S.bonusDone=true;S.totalBonusDone=(S.totalBonusDone||0)+1;addXP(S.bonusQuest.xp,S.bonusQuest.stat,'BONUS: '+S.bonusQuest.name,1);save();renderBonus();checkAch();}
+
+function renderBoss(){
+  const pct=Math.max(0,(S.bossHp/S.bossMaxHp)*100);
+  document.getElementById('bosssec').innerHTML=`<div class="boss"><div class="bosst">◈ WEEKLY BOSS RAID</div><div class="bossname">💀 ${S.bossName||'...'}</div><div class="bossdesc">${S.bossDesc||''}</div><div class="bosshpbg"><div class="bosshpfill" style="width:${pct}%"></div></div><div class="bosshptxt"><span>HP: ${S.bossHp} / ${S.bossMaxHp}</span><span>${S.bossDone?'✓ DEFEATED':'IN PROGRESS'}</span></div><div class="boss-reward">⭐ REWARD: ${S.bossReward} XP</div>${!S.bossDone?`<button class="boss-dmg-btn" onclick="dealDamage()">DEAL DAMAGE</button>`:'<div style="font-size:13px;color:#ff6080;margin-top:8px;">BOSS DEFEATED THIS WEEK</div>'}</div><div style="font-size:11px;color:#2a3a58;margin-top:8px;">Damage = today\'s quest XP total. New boss each Monday.</div>`;
+}
+function dealDamage(){
+  if(S.bossDone)return;
+  const dmg=Math.max(10,S.quests.reduce((a,q)=>{if(q.status==='full')return a+q.xp;if(q.status==='min')return a+(q.minXp||0);if(q.type==='qty')return a+(q.qty||0)*q.xp;return a;},0));
+  S.bossHp=Math.max(0,S.bossHp-dmg);notify(`Boss takes ${dmg} damage! HP: ${S.bossHp}/${S.bossMaxHp}`);
+  if(S.bossHp<=0){S.bossDone=true;addXP(S.bossReward,'dis','BOSS CLEAR: '+S.bossName,1);showLvlUp('BOSS DEFEATED — '+S.bossName);checkAch();}
+  save();renderBoss();
+}
+
+function renderAch(){
+  let html='';ACHIEVEMENTS.forEach(a=>{const u=S.achievements[a.id];html+=`<div class="ach ${u?'unlocked':''}"><div class="ach-ico">${a.ico}</div><div style="flex:1"><div class="ach-name">${a.name}</div><div class="ach-desc">${a.desc}</div></div><div class="ach-xp">${u?'+'+a.xp+' XP':'???'}</div></div>`;});
+  document.getElementById('achgrid').innerHTML=html;
+}
+function renderLog(){
+  const el=document.getElementById('loglist');
+  if(!S.log||!S.log.length){el.innerHTML='<span style="color:#1a2a40">No activity yet.</span>';return;}
+  el.innerHTML=S.log.slice(-50).reverse().map(l=>`<div style="border-bottom:1px solid rgba(70,110,255,.05);padding:2px 0"><span style="color:#4040a0">◈</span> ${l}</div>`).join('');
+}
+function togForm(){
+  const form=document.getElementById('addform');
+  const isOpening=!form.classList.contains('vis');
+  form.classList.toggle('vis');
+  document.getElementById('ftype').onchange=function(){document.getElementById('fqty-row').style.display=this.value==='qty'?'flex':'none';};
+  if(isOpening){
+    document.getElementById('fn').value='';
+    document.getElementById('fd').value='';
+    document.getElementById('fqtymax').value='';
+    document.getElementById('fqtyunit').value='';
+    document.getElementById('fslot').value='anytime';
+    document.getElementById('ftype').value='full';
+    document.getElementById('fsched').value='daily';
+    document.getElementById('fpriority').value='normal';
+    document.getElementById('fqty-row').style.display='none';
+    _fScheduleDays=[0,1,2,3,4,5,6];
+    selTier('D');
+    renderDayChips('f');
+    toggleScheduleRow('f');
+  }
+}
+function addQ(){
+  const name=document.getElementById('fn').value.trim();if(!name)return;
+  const stat=document.getElementById('fstat').value;const desc=document.getElementById('fd').value.trim();
+  const type=document.getElementById('ftype').value;const qtyMax=parseInt(document.getElementById('fqtymax').value)||3;
+  const qtyUnit=document.getElementById('fqtyunit').value.trim()||'units';
+  const timeSlot=document.getElementById('fslot').value||'anytime';
+  const scheduleType=document.getElementById('fsched').value||'daily';
+  const scheduleDays=getScheduleDays(scheduleType,_fScheduleDays);
+  const priority=document.getElementById('fpriority').value||'normal';
+  const tier=_selectedTier||'D';const xp=getTierXP(tier);
+  S.quests.push(createQuest({name,desc,stat,xp,tier,type,qtyMax,qtyUnit,priority,timeSlot,scheduleType,scheduleDays}));
+  document.getElementById('fn').value='';document.getElementById('fd').value='';document.getElementById('fqtymax').value='';
+  document.getElementById('fqtyunit').value='';
+  document.getElementById('fslot').value='anytime';document.getElementById('ftype').value='full';
+  document.getElementById('fsched').value='daily';document.getElementById('fpriority').value='normal';
+  document.getElementById('fqty-row').style.display='none';
+  _fScheduleDays=[0,1,2,3,4,5,6];
+  renderDayChips('f');
+  toggleScheduleRow('f');
+  selTier('D');document.getElementById('addform').classList.remove('vis');
+  commitChanges();notify(`Quest registered: ${name} [${tier}-Rank · ${xp} XP]`);
+}
+function notify(msg){const el=document.getElementById('notif');document.getElementById('notifm').textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2500);}
+function showLvlUp(sub){const el=document.getElementById('lvlup');document.getElementById('lvlups').textContent=sub;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3000);}
+function showAch(msg){const el=document.getElementById('achnot');document.getElementById('achnotm').textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3500);}
+
+function openHistoryDay(ts){
+  const dateStr=new Date(ts).toDateString();
+  const entry=getHistoryEntry(dateStr);
+  if(!entry)return;
+  const total=entry.total||0;
+  const partial=entry.partial||0;
+  const remaining=Math.max(0,total-(entry.completed||0)-partial);
+  const tag=entry.demo?'SIMULATED ARCHIVE':'DAY RECORD';
+  const note=entry.note?`<div class="history-note">${entry.note}</div>`:'';
+  document.getElementById('history-modal-content').innerHTML=`
+    <div class="history-modal-title">${dateStr.toUpperCase()}</div>
+    <div class="history-modal-sub">${tag} · ${entry.completionPct||0}% completion</div>
+    <div class="history-break-grid">
+      <div class="history-break-box"><div class="history-break-k">TOTAL XP</div><div class="history-break-v">${entry.xp||0}</div></div>
+      <div class="history-break-box"><div class="history-break-k">COMPLETE</div><div class="history-break-v">${entry.completed||0}/${total}</div></div>
+      <div class="history-break-box"><div class="history-break-k">PARTIAL</div><div class="history-break-v">${partial}</div></div>
+      <div class="history-break-box"><div class="history-break-k">REMAINING</div><div class="history-break-v">${remaining}</div></div>
+    </div>
+    <div class="history-break-note">This panel gives a quick breakdown of that day's quest momentum. Gold days are full clears, green days are strong runs, and blue days show partial progress.</div>${note}`;
+  document.getElementById('history-modal').classList.add('show');
+}
+
+function renderQuests(){
+  const cats={str:[],int:[],vit:[],con:[],dis:[]};
+  S.quests.forEach(q=>{
+    if(!isQuestDueToday(q))return;
+    if(_showRemainingOnly&&isQuestDone(q))return;
+    cats[q.stat].push(q);
+  });
+  document.getElementById('remaining-toggle-btn').classList.toggle('on',_showRemainingOnly);
+  document.getElementById('remaining-toggle-btn').textContent=_showRemainingOnly?'SHOW ALL':'REMAINING ONLY';
+  const scalar=getLevelScalar();
+  let html='';
+  ['str','int','vit','con','dis'].forEach(cat=>{
+    if(!cats[cat].length)return;
+    cats[cat].sort((a,b)=>(a.order??0)-(b.order??0)||a.id-b.id);
+    const m=getStatMeta(cat);
+    const baseMax=cats[cat].reduce((a,q)=>a+(q.type==='qty'?q.xp*(q.qtyMax||1):q.xp),0);
+    const trueMax=Math.round(baseMax*scalar);
+    const scaleNote=scalar>1.05?` <span style="color:#3a6040;font-size:8px">(base ${baseMax} x${scalar.toFixed(2)})</span>`:'';
+    const collapsed=_collapsedCats[cat];
+    html+=`<div class="qcat"><div class="qcath"><span>${m.ico}</span><span class="qcatn" style="color:${m.col}">${m.nm}</span><span class="qcatx">MAX ~${trueMax} XP/DAY${scaleNote}</span><button class="qcat-toggle" onclick="toggleCategory('${cat}')">${collapsed?'EXPAND':'COLLAPSE'}</button></div>`;
+    if(collapsed){html+='</div>';return;}
+    cats[cat].forEach(q=>{
+      const tier=q.tier||'D';
+      const pr=q.priority||'normal';
+      const overdue=isQuestOverdue(q);
+      const fullCls=q.type==='qty'?(q.qty>=(q.qtyMax||1)?'full':q.qty>0?'min':''):(q.status==='full'?'full':q.status==='min'?'min':'');
+      const ck=q.type==='qty'?(q.qty>=(q.qtyMax||1)?'✓':q.qty>0?q.qty:''):(q.status==='full'?'✓':q.status==='min'?'◐':'');
+      const streak=q.streak||0;
+      const mult=Math.min(1+((q.streak||0)*0.08),1.5);
+      const multStr=mult>1?`<div class="qmult">x${mult.toFixed(1)} streak</div>`:'';
+      const streakStr=streak>0?`<div class="qstreak">${streak}d streak</div>`:'';
+      const xpStr=q.type==='qty'?`${q.xp}/unit · max ${q.xp*(q.qtyMax||1)}`:q.type==='minmax'?`${q.minXp}/${q.xp} XP`:`${q.xp} XP`;
+      const scaleStr=scalar>1.05?`<div class="xp-scaled">x${scalar.toFixed(2)} lv</div>`:'';
+      let qtyHtml='';
+      if(q.type==='qty')qtyHtml=`<div class="qty-row" onclick="event.stopPropagation()"><button class="qty-btn" onclick="adjQty(${q.id},-1)">-</button><span class="qty-val">${q.qty}</span><button class="qty-btn" onclick="adjQty(${q.id},1)">+</button><span class="qty-label">/ ${q.qtyMax||1} ${q.qtyUnit}</span></div>`;
+      html+=`<div class="qi ${fullCls} ${overdue?'overdue':''}" id="quest-${q.id}" onclick="cycleQ(${q.id})" ondragover="allowQuestDrop(event,${q.id})" ondragleave="clearQuestDrop(${q.id})" ondrop="dropQuestBefore(event,${q.id})">
+        <div class="qchk">${ck}</div>
+        <div class="qdrag" draggable="true" ondragstart="startQuestDrag(event,${q.id})" onclick="event.stopPropagation()">⋮</div>
+        <div class="qcon">
+          <div class="qname"><span class="qtier qtier-${tier}">${tier}</span>${q.name}${getPriorityTag(q)}${getSlotTag(q)}${getOverdueTag(q)}</div>
+          <div class="qdesc">${overdue?'Past its ideal window · ':''}${q.desc||''}${q.type==='minmax'?' · once=min, twice=full':''}</div>
+          ${qtyHtml}
+          <div class="priority-rail" onclick="event.stopPropagation()"><button class="priority-pill ${pr==='normal'?'on-normal':''}" onclick="setQuestPriority(${q.id},'normal')">N</button><button class="priority-pill ${pr==='high'?'on-high':''}" onclick="setQuestPriority(${q.id},'high')">H</button><button class="priority-pill ${pr==='critical'?'on-critical':''}" onclick="setQuestPriority(${q.id},'critical')">C</button></div>
+          <button class="edit-btn" onclick="event.stopPropagation();editQ(${q.id})">EDIT</button><button class="retire-btn" onclick="event.stopPropagation();retireQ(${q.id})">RETIRE</button>
+        </div>
+        <div class="qright"><div class="qxp">${xpStr}</div>${scaleStr}${streakStr}${multStr}</div>
+      </div>`;
+    });
+    html+='</div>';
+  });
+  document.getElementById('qlist').innerHTML=html;
+}
+function setupInsightTab(){
+  const questTab=document.getElementById('tab-quests');
+  if(questTab){
+    const noteInput=document.getElementById('today-note-input');
+    if(noteInput){
+      const extraGrid=noteInput.closest('.dash-grid');
+      if(extraGrid)extraGrid.remove();
+    }
+    const oldInsight=document.getElementById('weekly-insight');
+    if(oldInsight){
+      const oldCard=oldInsight.closest('.dash-card');
+      if(oldCard)oldCard.remove();
+    }
+  }
+  const tabs=document.querySelector('.tabs');
+  if(tabs&&!document.querySelector('[onclick="sw(\'insight\')"]')){
+    const insightTab=document.createElement('div');
+    insightTab.className='tab';
+    insightTab.setAttribute('onclick',"sw('insight')");
+    insightTab.textContent='◈ INSIGHT';
+    const achTab=document.querySelector('[onclick="sw(\'ach\')"]');
+    tabs.insertBefore(insightTab,achTab||null);
+  }
+  if(!document.getElementById('tab-insight')){
+    const section=document.createElement('div');
+    section.className='tsec';
+    section.id='tab-insight';
+    section.innerHTML='<div class="dash-card"><div class="dash-title">WEEKLY INSIGHT</div><div id="weekly-insight-panel"></div></div>';
+    const achSection=document.getElementById('tab-ach');
+    const parent=achSection&&achSection.parentNode;
+    if(parent)parent.insertBefore(section,achSection);
+  }
+}
+
+function renderWeeklyInsight(){
+  const el=document.getElementById('weekly-insight-panel')||document.getElementById('weekly-insight');
+  if(!el)return;
+  const entries=getRecentEntries(7);
+  const totalXp=entries.reduce((sum,e)=>sum+(e.xp||0),0);
+  const totalDue=entries.reduce((sum,e)=>sum+(e.total||0),0);
+  const totalDone=entries.reduce((sum,e)=>sum+(e.completed||0),0);
+  const completionRate=totalDue?Math.round((totalDone/totalDue)*100):0;
+  const perfect=entries.filter(e=>(e.completionPct||0)>=100).length;
+  const catAgg={str:{done:0,total:0},int:{done:0,total:0},vit:{done:0,total:0},con:{done:0,total:0},dis:{done:0,total:0}};
+  const missedCounts={};
+  entries.forEach(entry=>{
+    const catStats=entry.catStats||{};
+    Object.keys(catAgg).forEach(cat=>{
+      const src=catStats[cat]||{};
+      catAgg[cat].done+=(src.done||0);
+      catAgg[cat].total+=(src.total||0);
+    });
+    (entry.missedHabits||[]).forEach(name=>{missedCounts[name]=(missedCounts[name]||0)+1;});
+  });
+  const catRows=Object.keys(catAgg).map(cat=>{
+    const total=catAgg[cat].total||0;
+    return{cat,pct:total?Math.round((catAgg[cat].done/total)*100):-1};
+  }).filter(row=>row.pct>=0);
+  const strongest=catRows.length?[...catRows].sort((a,b)=>b.pct-a.pct)[0]:null;
+  const weakest=catRows.length?[...catRows].sort((a,b)=>a.pct-b.pct)[0]:null;
+  const missedTop=Object.entries(missedCounts).sort((a,b)=>b[1]-a[1])[0];
+  const strongestMeta=strongest?getStatMeta(strongest.cat):null;
+  const weakestMeta=weakest?getStatMeta(weakest.cat):null;
+  el.innerHTML=`
+    <div class="insight-grid">
+      <div class="insight-box"><div class="insight-k">TOTAL XP THIS WEEK</div><div class="insight-v">${totalXp}</div><div class="insight-sub">sum of the last 7 day records</div></div>
+      <div class="insight-box"><div class="insight-k">COMPLETION RATE</div><div class="insight-v">${completionRate}%</div><div class="insight-sub">${totalDone}/${totalDue||0} due habits cleared</div></div>
+      <div class="insight-box"><div class="insight-k">STRONGEST CATEGORY</div><div class="insight-v">${strongestMeta?strongestMeta.nm:'NONE'}</div><div class="insight-sub">${strongest?strongest.pct:0}% weekly clear rate</div></div>
+      <div class="insight-box"><div class="insight-k">WEAKEST CATEGORY</div><div class="insight-v">${weakestMeta?weakestMeta.nm:'NONE'}</div><div class="insight-sub">${weakest?weakest.pct:0}% weekly clear rate</div></div>
+      <div class="insight-box"><div class="insight-k">MOST MISSED HABIT</div><div class="insight-v">${missedTop?missedTop[1]+'x':'0x'}</div><div class="insight-sub">${missedTop?missedTop[0]:'No repeated misses this week'}</div></div>
+      <div class="insight-box"><div class="insight-k">PERFECT DAYS THIS WEEK</div><div class="insight-v">${perfect}</div><div class="insight-sub">full clears across the last 7 days</div></div>
+    </div>`;
+}
+
+let _selectedDateKey=todayStr();
+let _weekOffset=0;
+let _focusSlotFilter='auto';
+const __origCycleQ=cycleQ;
+const __origAdjQty=adjQty;
+function getTierRank(tier){return{S:5,A:4,B:3,C:2,D:1}[tier||'D']||1;}
+
+function getSelectedDate(){return new Date(_selectedDateKey);}
+function getDayState(key){
+  S.dayStates=S.dayStates||{};
+  if(!S.dayStates[key])S.dayStates[key]={quests:{}};
+  return S.dayStates[key];
+}
+function getQuestView(q,key=_selectedDateKey){
+  if(key===todayStr())return q;
+  const patch=((((S.dayStates||{})[key]||{}).quests||{})[q.id])||{};
+  return {
+    ...q,
+    status:'none',
+    qty:0,
+    _xpAwarded:0,
+    _statXpAwarded:0,
+    _xpMin:0,
+    _statXpMin:0,
+    _xpFull:0,
+    _statXpFull:0,
+    _unitXp:[],
+    _unitStatXp:[],
+    ...patch
+  };
+}
+function isQuestOverdueForSelected(q){
+  if(_selectedDateKey!==todayStr())return false;
+  return isQuestOverdue(q);
+}
+function isQuestDueForSelected(q){return isQuestDueOnDate(q,getSelectedDate());}
+function isQuestDoneForKey(q,key=_selectedDateKey){
+  const v=getQuestView(q,key);
+  return v.type==='qty'?(v.qty>=(v.qtyMax||1)):(v.status==='full');
+}
+function getSnapshotForKey(key){
+  if(key===todayStr())return getTodaySnapshot();
+  return (S.history||[]).find(h=>h.date===key)||{date:key,xp:0,total:S.quests.filter(q=>isQuestDueOnDate(q,new Date(key))).length,completed:0,partial:0,completionPct:0};
+}
+function setSelectedDate(key){_selectedDateKey=key;render();}
+function shiftWeek(delta){_weekOffset+=delta;renderWeekStrip();}
+function setFocusSlotFilter(value){_focusSlotFilter=value;render();}
+function renderWeekStrip(){
+  const el=document.getElementById('week-strip');if(!el)return;
+  const base=getSelectedDate();const monday=new Date(base);monday.setHours(0,0,0,0);
+  monday.setDate(monday.getDate()-((monday.getDay()+6)%7)+(_weekOffset*7));
+  const end=new Date(monday);end.setDate(monday.getDate()+6);
+  let days='';
+  for(let i=0;i<7;i++){
+    const d=new Date(monday);d.setDate(monday.getDate()+i);
+    const key=d.toDateString();const snap=getSnapshotForKey(key);const pct=snap.completionPct||0;
+    const state=pct>=100?'perfect':pct>=70?'strong':pct>0?'progress':'none';
+    days+=`<button class="week-day state-${state}${key===_selectedDateKey?' sel':''}" onclick="setSelectedDate('${key}')"><div><div class="week-dow">${d.toLocaleDateString([],{weekday:'short'}).toUpperCase()}</div><div class="week-num">${d.getDate()}</div></div><div class="week-sub">${snap.total?`${snap.completed||0}/${snap.total} done`:'No habits'}</div></button>`;
+  }
+  el.innerHTML=`<div class="week-head"><div class="week-label">WEEKLY NAVIGATION</div><div class="week-nav"><button class="week-btn" onclick="shiftWeek(-1)">PREV</button><div class="week-label">${monday.toLocaleDateString([],{month:'short',day:'numeric'})} - ${end.toLocaleDateString([],{month:'short',day:'numeric'})}</div><button class="week-btn" onclick="shiftWeek(1)">NEXT</button></div></div><div class="week-days">${days}</div>`;
+}
+function renderTopDuePanel(){
+  const el=document.getElementById('top-due-panel');if(!el)return;
+  const items=S.quests.filter(q=>isQuestDueForSelected(q)).map(q=>getQuestView(q)).filter(q=>!isQuestDoneForKey(q,_selectedDateKey)).sort((a,b)=>(getTierRank(b.tier)-getTierRank(a.tier))||(b.xp-a.xp)||((b.priority==='critical')?2:(b.priority==='high')?1:0)-((a.priority==='critical')?2:(a.priority==='high')?1:0)).slice(0,5);
+  if(!items.length){el.innerHTML='<div class="history-empty">Nothing high-XP is left for this day.</div>';return;}
+  el.innerHTML=items.map(q=>{
+    const action=q.type==='qty'
+      ?`<div class="focus-action" style="margin-top:8px"><button class="focus-btn alt" onclick="adjustQtyForSelectedDate(${q.id},-1)">-1</button><button class="focus-btn" onclick="adjustQtyForSelectedDate(${q.id},1)">+1</button></div>`
+      :`<div class="focus-action" style="margin-top:8px"><button class="focus-btn" onclick="toggleQuestForSelectedDate(${q.id})">${q.type==='minmax'?(q.status==='min'?'ADVANCE':'CHECK'):(q.status==='none'?'CHECK':'UNDO')}</button></div>`;
+    return `<div class="history-day monarch" style="min-height:unset;padding:10px 8px;margin-bottom:6px;cursor:default"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div><div class="history-dow">${(q.timeSlot||'anytime').toUpperCase()}</div><div class="history-num" style="font-size:12px"><span class="qtier qtier-${q.tier||'D'}">${q.tier||'D'}</span>${q.name}</div><div class="history-rate">${q.desc||'Tap action below.'}</div></div><div style="text-align:right"><div class="history-xp">${q.xp} XP</div><div class="history-rate">${q.type==='qty'?(q.qty||0)+'/'+(q.qtyMax||1):q.status==='min'?'PARTIAL':'PENDING'}</div></div></div>${action}</div>`;
+  }).join('');
+}
+function renderDailySummary(){
+  const el=document.getElementById('daily-summary');if(!el)return;
+  const snap=getSnapshotForKey(_selectedDateKey);const remaining=Math.max(0,(snap.total||0)-(snap.completed||0)-(snap.partial||0));
+  el.innerHTML=`<div class="summary-grid"><div class="summary-box"><div class="summary-k">COMPLETE</div><div class="summary-v">${snap.completed||0}/${snap.total||0}</div><div class="summary-sub">${snap.completionPct||0}% clear</div></div><div class="summary-box"><div class="summary-k">PARTIAL</div><div class="summary-v">${snap.partial||0}</div><div class="summary-sub">${remaining} remaining</div></div><div class="summary-box"><div class="summary-k">DAY XP</div><div class="summary-v">${_selectedDateKey===todayStr()?(S.todayXp||0):(snap.xp||0)}</div><div class="summary-sub">${_selectedDateKey===todayStr()?'live':'selected'} progress</div></div><div class="summary-box"><div class="summary-k">7D AVG XP</div><div class="summary-v">${getRecentAverageXp(7)}</div><div class="summary-sub">recent momentum</div></div></div><div class="summary-bar"><div class="summary-fill" style="width:${snap.completionPct||0}%"></div></div>`;
+}
+function renderTodayFocus(){
+  const el=document.getElementById('today-focus');if(!el)return;
+  const currentSlot=getCurrentSlot();
+  const effectiveSlot=_focusSlotFilter==='auto'?currentSlot:_focusSlotFilter;
+  const slotWeight=(slot)=>slot===effectiveSlot?140:slot==='anytime'?40:0;
+  const allItems=S.quests.filter(q=>isQuestDueForSelected(q)).map(q=>getQuestView(q)).filter(q=>!isQuestDoneForKey(q,_selectedDateKey));
+  const items=allItems.filter(q=>{
+    if(effectiveSlot==='pending')return true;
+    return effectiveSlot==='all'?true:(q.timeSlot||'anytime')===effectiveSlot;
+  }).sort((a,b)=>(((b.priority==='critical')?300:(b.priority==='high')?180:0)+slotWeight(b.timeSlot||'anytime')+b.xp)-(((a.priority==='critical')?300:(a.priority==='high')?180:0)+slotWeight(a.timeSlot||'anytime')+a.xp));
+  const chips=[
+    ['auto','AUTO'],
+    ['pending',`PENDING (${allItems.length})`]
+  ].map(([val,label])=>`<button type="button" class="focus-chip ${_focusSlotFilter===val?'on':''}" onclick="setFocusSlotFilter('${val}')">${label}</button>`).join('');
+  const filters=`<div class="focus-filters">${chips}<select class="focus-select" onchange="setFocusSlotFilter(this.value)"><option value="auto"${_focusSlotFilter==='auto'?' selected':''}>TIME FILTER</option><option value="morning"${_focusSlotFilter==='morning'?' selected':''}>MORNING</option><option value="day"${_focusSlotFilter==='day'?' selected':''}>AFTERNOON</option><option value="night"${_focusSlotFilter==='night'?' selected':''}>NIGHT</option><option value="anytime"${_focusSlotFilter==='anytime'?' selected':''}>ANYTIME</option></select></div>`;
+  if(!items.length){el.innerHTML=`<div class="focus-head"><div class="focus-title">QUESTS</div><div class="focus-meta">${new Date(_selectedDateKey).toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'})}</div></div>${filters}<div class="focus-empty">No matching quests for this filter on the selected day.</div>`;return;}
+  el.innerHTML=`<div class="focus-head"><div class="focus-title">QUESTS</div><div class="focus-meta">${new Date(_selectedDateKey).toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'})}</div></div>${filters}<div class="focus-grid vertical">${items.slice(0,4).map(q=>`<div class="focus-card ${isQuestOverdueForSelected(q)?'overdue':''}"><div class="focus-top"><div><div class="focus-name"><span class="qtier qtier-${q.tier||'D'}">${q.tier||'D'}</span>${q.name}${getPriorityTag(q)}${getSlotTag(q)}${isQuestOverdueForSelected(q)?getOverdueTag(q):''}</div><div class="focus-desc">${q.desc||'Tap to update progress.'}</div></div><div class="focus-xp">${q.xp} XP</div></div>${q.type==='qty'?`<div class="focus-action"><button class="focus-btn alt" onclick="adjustQtyForSelectedDate(${q.id},-1)">-1</button><button class="focus-btn" onclick="adjustQtyForSelectedDate(${q.id},1)">+1</button></div>`:`<div class="focus-action"><button class="focus-btn" onclick="toggleQuestForSelectedDate(${q.id})">${q.type==='minmax'?(q.status==='min'?'ADVANCE':'CHECK'):(q.status==='none'?'CHECK':'UNDO')}</button></div>`}</div>`).join('')}</div>`;
+}
+function renderQuests(){
+  const cats={str:[],int:[],vit:[],con:[],dis:[]};const slots=['morning','day','night','anytime'];const slotLabels={morning:'MORNING',day:'DAY',night:'NIGHT',anytime:'ANYTIME'};
+  S.quests.forEach(q=>{if(isQuestDueForSelected(q))cats[q.stat].push(getQuestView(q));});
+  document.getElementById('remaining-toggle-btn').classList.toggle('on',_showRemainingOnly);
+  document.getElementById('remaining-toggle-btn').textContent=_showRemainingOnly?'SHOW ALL':'REMAINING ONLY';
+  let html='';
+  ['str','int','vit','con','dis'].forEach(cat=>{
+    let list=cats[cat].filter(q=>!(_showRemainingOnly&&isQuestDoneForKey(q,_selectedDateKey)));if(!list.length)return;
+    list.sort((a,b)=>(a.order??0)-(b.order??0)||a.id-b.id);const m=getStatMeta(cat);const collapsed=_collapsedCats[cat];
+    html+=`<div class="qcat"><div class="qcath"><span>${m.ico}</span><span class="qcatn" style="color:${m.col}">${m.nm}</span><button class="qcat-toggle" onclick="toggleCategory('${cat}')">${collapsed?'EXPAND':'COLLAPSE'}</button></div>`;
+    if(collapsed){html+='</div>';return;}
+    slots.forEach(slot=>{const group=list.filter(q=>(q.timeSlot||'anytime')===slot);if(!group.length)return;html+=`<div class="slot-divider"><div class="slot-label">${slotLabels[slot]}</div></div>`;group.forEach(q=>{const pr=q.priority||'normal';const overdue=isQuestOverdueForSelected(q);const fullCls=q.type==='qty'?(q.qty>=(q.qtyMax||1)?'full':q.qty>0?'min':''):(q.status==='full'?'full':q.status==='min'?'min':'');const ck=q.type==='qty'?(q.qty>=(q.qtyMax||1)?'✓':q.qty>0?q.qty:''):(q.status==='full'?'✓':q.status==='min'?'◐':'');const qtyHtml=q.type==='qty'?`<div class="qty-row" onclick="event.stopPropagation()"><button class="qty-btn" onclick="adjustQtyForSelectedDate(${q.id},-1)">-</button><span class="qty-val">${q.qty}</span><button class="qty-btn" onclick="adjustQtyForSelectedDate(${q.id},1)">+</button><span class="qty-label">/ ${q.qtyMax||1} ${q.qtyUnit}</span></div>`:'';html+=`<div class="qi ${fullCls} ${overdue?'overdue':''}" onclick="${q.type==='qty'?'':'toggleQuestForSelectedDate('+q.id+')'}"><div class="qchk">${ck}</div><div class="qdrag" draggable="true" ondragstart="startQuestDrag(event,${q.id})" onclick="event.stopPropagation()">⋮</div><div class="qcon"><div class="qname"><span class="qtier qtier-${q.tier||'D'}">${q.tier||'D'}</span>${q.name}${getPriorityTag(q)}${overdue?getOverdueTag(q):''}</div><div class="qdesc">${q.desc||''}${q.type==='minmax'?' · once=min, twice=full':''}</div>${qtyHtml}<div class="priority-rail" onclick="event.stopPropagation()"><button class="priority-pill ${pr==='normal'?'on-normal':''}" onclick="setQuestPriority(${q.id},'normal')">N</button><button class="priority-pill ${pr==='high'?'on-high':''}" onclick="setQuestPriority(${q.id},'high')">H</button><button class="priority-pill ${pr==='critical'?'on-critical':''}" onclick="setQuestPriority(${q.id},'critical')">C</button></div><button class="edit-btn" onclick="event.stopPropagation();editQ(${q.id})">EDIT</button><button class="retire-btn" onclick="event.stopPropagation();retireQ(${q.id})">RETIRE</button></div><div class="qright"><div class="qxp">${q.type==='qty'?`${q.xp}/unit · max ${q.xp*(q.qtyMax||1)}`:q.type==='minmax'?`${q.minXp}/${q.xp} XP`:`${q.xp} XP`}</div></div></div>`;});});html+='</div>';
+  });
+  document.getElementById('qlist').innerHTML=html;
+}
+function updateHistoryFromState(key){
+  if(key===todayStr())return;
+  const due=S.quests.filter(q=>isQuestDueOnDate(q,new Date(key)));const state=((((S.dayStates||{})[key]||{}).quests)||{});
+  let xp=0,completed=0,partial=0;const catStats={str:{done:0,total:0},int:{done:0,total:0},vit:{done:0,total:0},con:{done:0,total:0},dis:{done:0,total:0}};const missedHabits=[];
+  due.forEach(q=>{const v={...q,...(state[q.id]||{})};catStats[v.stat].total++;if(v.type==='qty'){xp+=(v.qty||0)*(v.xp||0);if((v.qty||0)>=(v.qtyMax||1)){completed++;catStats[v.stat].done++;}else if((v.qty||0)>0)partial++;else missedHabits.push(v.name);}else if(v.type==='minmax'){if(v.status==='full'){completed++;catStats[v.stat].done++;xp+=v.xp||0;}else if(v.status==='min'){partial++;xp+=v.minXp||Math.floor((v.xp||0)/2);}else missedHabits.push(v.name);}else{if(v.status==='full'){completed++;catStats[v.stat].done++;xp+=v.xp||0;}else missedHabits.push(v.name);}});
+  const total=due.length;const completionPct=total?Math.round((completed/total)*100):0;const entry={date:key,xp,total,completed,partial,completionPct,catStats,missedHabits,demo:false};
+  S.history=S.history||[];const idx=S.history.findIndex(h=>h.date===key);if(idx>=0)S.history[idx]=entry;else S.history.push(entry);save();
+}
+function recomputeProgressFromHistory(){
+  const total=getCumulativeHistoryXp();
+  S.totalXp=total;
+  S.stats.strXp=Math.round(total*0.22);
+  S.stats.intXp=Math.round(total*0.24);
+  S.stats.vitXp=Math.round(total*0.2);
+  S.stats.conXp=Math.round(total*0.16);
+  S.stats.disXp=Math.round(total*0.18);
+  syncLevelFromTotalXp();
+  save();
+}
+function toggleQuestForSelectedDate(id){
+  if(_selectedDateKey===todayStr())return __origCycleQ(id);
+  const q=S.quests.find(x=>x.id==id);if(!q||q.type==='qty')return;const st=getDayState(_selectedDateKey);const cur=getQuestView(q,_selectedDateKey);const next=q.type==='minmax'?(cur.status==='none'?'min':cur.status==='min'?'full':'none'):(cur.status==='full'?'none':'full');st.quests[q.id]={...(st.quests[q.id]||{}),status:next,qty:0};updateHistoryFromState(_selectedDateKey);recomputeProgressFromHistory();render();
+}
+function adjustQtyForSelectedDate(id,delta){
+  if(_selectedDateKey===todayStr())return __origAdjQty(id,delta);
+  const q=S.quests.find(x=>x.id==id);if(!q||q.type!=='qty')return;const st=getDayState(_selectedDateKey);const cur=getQuestView(q,_selectedDateKey);const qty=Math.max(0,Math.min(q.qtyMax||5,(cur.qty||0)+delta));st.quests[q.id]={...(st.quests[q.id]||{}),qty,status:qty>=(q.qtyMax||1)?'full':qty>0?'min':'none'};updateHistoryFromState(_selectedDateKey);recomputeProgressFromHistory();render();
+}
+function setupDailyNavigation(){
+  const questsTab=document.getElementById('tab-quests');
+  if(questsTab&&!document.getElementById('week-strip')){const strip=document.createElement('div');strip.className='week-strip';strip.id='week-strip';questsTab.insertBefore(strip,document.getElementById('today-focus'));}
+  const summaryWrap=document.getElementById('daily-summary')?.closest('.dash-card');
+  const focusEl=document.getElementById('today-focus');
+  if(summaryWrap&&focusEl&&focusEl.parentNode!==summaryWrap){
+    summaryWrap.appendChild(focusEl);
+  }
+  const historyCalendar=document.getElementById('history-calendar');if(historyCalendar){historyCalendar.id='top-due-panel';const card=historyCalendar.closest('.dash-card');if(card){const title=card.querySelector('.dash-title');if(title)title.textContent='TOP XP DUE';const meta=card.querySelector('.history-head-right');if(meta)meta.remove();}}
+  const noteInput=document.getElementById('today-note-input');if(noteInput){const extra=noteInput.closest('.dash-grid');if(extra)extra.remove();}
+  const logTab=document.querySelector('[onclick="sw(\'log\')"]');if(logTab)logTab.remove();
+  const logSection=document.getElementById('tab-log');if(logSection)logSection.remove();
+  const addPriority=document.getElementById('fpriority');if(addPriority)addPriority.style.display='none';
+  const editPriority=document.getElementById('epriority');if(editPriority)editPriority.style.display='none';
+}
+// sw() is defined below — single authoritative version with bnav sync
+function renderTodayFocus(){
+  const el=document.getElementById('today-focus');if(!el)return;
+  const currentSlot=getCurrentSlot();
+  const effectiveSlot=_focusSlotFilter==='auto'?currentSlot:_focusSlotFilter;
+  const slotWeight=(slot)=>slot===effectiveSlot?140:slot==='anytime'?40:0;
+  const slotOrder=['morning','day','night','anytime'];
+  const slotLabels={morning:'MORNING',day:'AFTERNOON',night:'NIGHT',anytime:'ANYTIME'};
+  const allItems=S.quests.filter(q=>isQuestDueForSelected(q)).map(q=>getQuestView(q)).filter(q=>!isQuestDoneForKey(q,_selectedDateKey));
+  const items=allItems.filter(q=>effectiveSlot==='all'?true:(q.timeSlot||'anytime')===effectiveSlot).sort((a,b)=>(slotWeight(b.timeSlot||'anytime')+b.xp)-(slotWeight(a.timeSlot||'anytime')+a.xp));
+  const visibleItems=_focusSlotFilter==='auto'
+    ?allItems.filter(q=>{const slot=q.timeSlot||'anytime';return slot===currentSlot||slot==='anytime';}).sort((a,b)=>(slotWeight(b.timeSlot||'anytime')+b.xp)-(slotWeight(a.timeSlot||'anytime')+a.xp))
+    :items;
+  const overdueAutoItems=allItems.filter(q=>isQuestOverdueForSelected(q));
+  const chips=[['auto','AUTO']].map(([val,label])=>`<button type="button" class="focus-chip ${_focusSlotFilter===val?'on':''}" onclick="setFocusSlotFilter('${val}')">${label}</button>`).join('');
+  const filters=`<div class="focus-filters">${chips}<select class="focus-select" onchange="setFocusSlotFilter(this.value)"><option value="auto"${_focusSlotFilter==='auto'?' selected':''}>TIME FILTER</option><option value="morning"${_focusSlotFilter==='morning'?' selected':''}>MORNING</option><option value="day"${_focusSlotFilter==='day'?' selected':''}>AFTERNOON</option><option value="night"${_focusSlotFilter==='night'?' selected':''}>NIGHT</option><option value="anytime"${_focusSlotFilter==='anytime'?' selected':''}>ANYTIME</option><option value="all"${_focusSlotFilter==='all'?' selected':''}>ALL</option></select></div>`;
+  if(!visibleItems.length){el.innerHTML=`<div class="focus-head"><div class="focus-title">QUESTS</div><div class="focus-meta">${new Date(_selectedDateKey).toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'})}</div></div>${filters}<div class="focus-empty">No matching quests for this filter on the selected day.</div>`;return;}
+  const cardHtml=(q)=>`<div class="focus-card ${isQuestOverdueForSelected(q)?'overdue':''}"><div class="focus-top"><div><div class="focus-name"><span class="qtier qtier-${q.tier||'D'}">${q.tier||'D'}</span>${q.name}${getCategoryTag(q)}${getSlotTag(q)}${isQuestOverdueForSelected(q)?getOverdueTag(q):''}</div><div class="focus-desc">${q.desc||'Tap to update progress.'}</div></div><div class="focus-xp">${q.xp} XP</div></div>${q.type==='qty'?`<div class="focus-action"><button class="focus-btn alt" onclick="adjustQtyForSelectedDate(${q.id},-1)">-1</button><button class="focus-btn" onclick="adjustQtyForSelectedDate(${q.id},1)">+1</button></div>`:`<div class="focus-action"><button class="focus-btn" onclick="toggleQuestForSelectedDate(${q.id})">${q.type==='minmax'?(q.status==='min'?'ADVANCE':'CHECK'):(q.status==='none'?'CHECK':'UNDO')}</button></div>`}</div>`;
+  const body=_focusSlotFilter==='auto'
+    ?[
+        ...(['morning','day','night'].includes(currentSlot)&&visibleItems.some(q=>(q.timeSlot||'anytime')===currentSlot)?[`<div class="focus-slot-divider"><div class="focus-slot-label">${slotLabels[currentSlot]}</div></div>${visibleItems.filter(q=>(q.timeSlot||'anytime')===currentSlot).map(cardHtml).join('')}`]:[]),
+        ...(overdueAutoItems.length?[`<div class="focus-slot-divider"><div class="focus-slot-label">OVERDUE</div></div>${overdueAutoItems.map(cardHtml).join('')}`]:[]),
+        ...(visibleItems.some(q=>(q.timeSlot||'anytime')==='anytime')?[`<div class="focus-slot-divider"><div class="focus-slot-label">${slotLabels.anytime}</div></div>${visibleItems.filter(q=>(q.timeSlot||'anytime')==='anytime').map(cardHtml).join('')}`]:[])
+      ].join('')
+      :visibleItems.map(cardHtml).join('');
+  el.innerHTML=`<div class="focus-head"><div class="focus-title">QUESTS</div><div class="focus-meta">${new Date(_selectedDateKey).toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'})}</div></div>${filters}<div class="focus-grid vertical">${body}</div>`;
+}
+function renderQuests(){
+  const cats={str:[],int:[],vit:[],con:[],dis:[]};
+  S.quests.forEach(q=>{if(isQuestDueForSelected(q))cats[q.stat].push(getQuestView(q));});
+  document.getElementById('remaining-toggle-btn').classList.toggle('on',_showRemainingOnly);
+  document.getElementById('remaining-toggle-btn').textContent=_showRemainingOnly?'SHOW ALL':'REMAINING ONLY';
+  let html='';
+  ['str','int','vit','con','dis'].forEach(cat=>{
+    let list=cats[cat].filter(q=>!(_showRemainingOnly&&isQuestDoneForKey(q,_selectedDateKey)));
+    if(!list.length)return;
+    list.sort((a,b)=>(a.order??0)-(b.order??0)||a.id-b.id);
+    const m=getStatMeta(cat);
+    const collapsed=_collapsedCats[cat];
+    html+=`<div class="qcat"><div class="qcath"><span>${m.ico}</span><span class="qcatn" style="color:${m.col}">${m.nm}</span><button class="qcat-toggle" onclick="toggleCategory('${cat}')">${collapsed?'EXPAND':'COLLAPSE'}</button></div>`;
+    if(collapsed){html+='</div>';return;}
+    list.forEach(q=>{
+      const overdue=isQuestOverdueForSelected(q);
+      const fullCls=q.type==='qty'?(q.qty>=(q.qtyMax||1)?'full':q.qty>0?'min':''):(q.status==='full'?'full':q.status==='min'?'min':'');
+      const ck=q.type==='qty'?(q.qty>=(q.qtyMax||1)?'✓':q.qty>0?q.qty:''):(q.status==='full'?'✓':q.status==='min'?'◐':'');
+      const qtyHtml=q.type==='qty'?`<div class="qty-row" onclick="event.stopPropagation()"><button class="qty-btn" onclick="adjustQtyForSelectedDate(${q.id},-1)">-</button><span class="qty-val">${q.qty}</span><button class="qty-btn" onclick="adjustQtyForSelectedDate(${q.id},1)">+</button><span class="qty-label">/ ${q.qtyMax||1} ${q.qtyUnit}</span></div>`:'';
+      html+=`<div class="qi ${fullCls} ${overdue?'overdue':''}" id="quest-${q.id}" onclick="${q.type==='qty'?'':'toggleQuestForSelectedDate('+q.id+')'}" ondragover="allowQuestDrop(event,${q.id})" ondragleave="clearQuestDrop(${q.id})" ondrop="dropQuestBefore(event,${q.id})"><div class="qchk">${ck}</div><div class="qdrag" draggable="true" ondragstart="startQuestDrag(event,${q.id})" onclick="event.stopPropagation()">⋮</div><div class="qcon"><div class="qname"><span class="qtier qtier-${q.tier||'D'}">${q.tier||'D'}</span>${q.name}${getSlotTag(q)}${overdue?getOverdueTag(q):''}</div><div class="qdesc">${q.desc||''}${q.type==='minmax'?' · once=min, twice=full':''}</div>${qtyHtml}<button class="edit-btn" onclick="event.stopPropagation();editQ(${q.id})">EDIT</button><button class="retire-btn" onclick="event.stopPropagation();retireQ(${q.id})">RETIRE</button></div><div class="qright"><div class="qxp">${q.type==='qty'?`${q.xp}/unit · max ${q.xp*(q.qtyMax||1)}`:q.type==='minmax'?`${q.minXp}/${q.xp} XP`:`${q.xp} XP`}</div></div></div>`;
+    });
+    html+='</div>';
+  });
+  document.getElementById('qlist').innerHTML=html;
+}
+function ensureInsightStyles(){
+  if(document.getElementById('insight-radar-styles'))return;
+  const style=document.createElement('style');
+  style.id='insight-radar-styles';
+  style.textContent=`
+    .insight-wrap{display:grid;gap:14px}
+    .radar-card{position:relative;overflow:hidden;border:1px solid rgba(104,158,255,.18);border-radius:18px;background:linear-gradient(180deg,rgba(10,20,42,.9),rgba(7,14,30,.92));padding:16px}
+    .radar-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at top,rgba(110,136,255,.12),transparent 56%);pointer-events:none}
+    .radar-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:12px}
+    .radar-title{font:800 12px Orbitron,system-ui;color:#dce8ff;letter-spacing:.24em}
+    .radar-sub{font:600 11px Rajdhani,system-ui;color:#86a9e7;letter-spacing:.08em}
+    .radar-wrap{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(180px,.8fr);gap:12px;align-items:center}
+    .radar-svg{width:100%;height:auto;display:block;filter:drop-shadow(0 8px 20px rgba(22,34,70,.28))}
+    .radar-legend{display:grid;gap:8px}
+    .radar-item{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:10px 12px;border-radius:14px;background:rgba(13,24,48,.64);border:1px solid rgba(104,158,255,.12)}
+    .radar-name{font:800 11px Orbitron,system-ui;color:#dbe6ff;letter-spacing:.16em}
+    .radar-val{font:800 16px Rajdhani,system-ui;color:#f7fbff}
+    .radar-cap{font:700 10px Rajdhani,system-ui;color:#7fa2dc;letter-spacing:.08em}
+    @media (max-width:760px){
+      .radar-wrap{grid-template-columns:1fr}
+    }
+  `;
+  document.head.appendChild(style);
+}
+function getRadarChartSvg(){
+  const defs=[
+    {key:'str',label:'STR',value:xpToPoints(S.stats.strXp||0),color:'#6fc5ff'},
+    {key:'int',label:'INT',value:xpToPoints(S.stats.intXp||0),color:'#9ea8ff'},
+    {key:'vit',label:'VIT',value:xpToPoints(S.stats.vitXp||0),color:'#79e5c6'},
+    {key:'con',label:'CON',value:xpToPoints(S.stats.conXp||0),color:'#88a4ff'},
+    {key:'dis',label:'DIS',value:xpToPoints(S.stats.disXp||0),color:'#d4a8ff'}
+  ];
+  const maxValue=100;
+  const size=320,c=size/2,r=104;
+  const levels=4;
+  const pointAt=(index,ratio)=>{
+    const angle=(-Math.PI/2)+(index*(Math.PI*2/defs.length));
+    return {x:c+Math.cos(angle)*r*ratio,y:c+Math.sin(angle)*r*ratio};
+  };
+  const rings=Array.from({length:levels},(_,i)=>{
+    const ratio=(i+1)/levels;
+    const pts=defs.map((_,idx)=>{const p=pointAt(idx,ratio);return `${p.x.toFixed(1)},${p.y.toFixed(1)}`;}).join(' ');
+    return `<polygon points="${pts}" fill="none" stroke="rgba(116,146,219,${0.12+ratio*0.08})" stroke-width="1"/>`;
+  }).join('');
+  const scaleLabels=[25,50,75,100].map(val=>{
+    const p=pointAt(0,val/maxValue);
+    return `<text x="${(p.x+8).toFixed(1)}" y="${(p.y-4).toFixed(1)}" class="radar-scale">${val}</text>`;
+  }).join('');
+  const axes=defs.map((d,idx)=>{const p=pointAt(idx,1);return `<line x1="${c}" y1="${c}" x2="${p.x}" y2="${p.y}" stroke="rgba(116,146,219,.24)" stroke-width="1"/>`;}).join('');
+  const polyPts=defs.map((d,idx)=>{const p=pointAt(idx,Math.max(.08,Math.min(1,d.value/maxValue)));return `${p.x.toFixed(1)},${p.y.toFixed(1)}`;}).join(' ');
+  const labels=defs.map((d,idx)=>{
+    const p=pointAt(idx,1.18);
+    return `<text x="${p.x}" y="${p.y}" text-anchor="middle" dominant-baseline="middle" fill="${d.color}" font-family="Orbitron,system-ui" font-size="12" font-weight="700" letter-spacing="1.4">${d.label}</text>`;
+  }).join('');
+  const points=defs.map((d,idx)=>{
+    const p=pointAt(idx,Math.max(.08,Math.min(1,d.value/maxValue)));
+    return `<circle cx="${p.x}" cy="${p.y}" r="4" fill="${d.color}" stroke="rgba(9,15,28,.9)" stroke-width="2"/>`;
+  }).join('');
+  return `<svg class="radar-svg" viewBox="0 0 ${size} ${size}" role="img" aria-label="Five-stat comparison chart">${rings}${axes}${scaleLabels}<polygon points="${polyPts}" fill="rgba(120,147,255,.22)" stroke="rgba(173,191,255,.9)" stroke-width="2"/><circle cx="${c}" cy="${c}" r="3" fill="rgba(205,220,255,.85)"/>${points}${labels}</svg>`;
+}
+function setupInsightTab(){
+  ensureInsightStyles();
+  const tabs=document.querySelector('.tabs');
+  if(tabs){
+    const insightTab=[...tabs.querySelectorAll('.tab')].find(t=>/INSIGHT/.test(t.textContent||''));
+    const questTab=[...tabs.querySelectorAll('.tab')].find(t=>t.getAttribute('onclick')==="sw('quests')");
+    if(insightTab&&questTab&&questTab.nextSibling!==insightTab){
+      tabs.insertBefore(insightTab,questTab.nextSibling);
+    }
+    if(!insightTab){
+      const node=document.createElement('div');
+      node.className='tab';
+      node.setAttribute('onclick',"sw('insight')");
+      node.textContent='â—ˆ INSIGHT';
+      tabs.insertBefore(node,questTab?questTab.nextSibling:null);
+    }
+  }
+  let section=document.getElementById('tab-insight');
+  if(!section){
+    section=document.createElement('div');
+    section.className='tsec';
+    section.id='tab-insight';
+    section.innerHTML='<div class="dash-card"><div class="dash-title">WEEKLY INSIGHT</div><div id="weekly-insight-panel"></div></div>';
+  }
+  const questsSection=document.getElementById('tab-quests');
+  if(questsSection&&questsSection.parentNode&&questsSection.nextSibling!==section){
+    questsSection.parentNode.insertBefore(section,questsSection.nextSibling);
+  }
+}
+function renderWeeklyInsight(){
+  const el=document.getElementById('weekly-insight-panel')||document.getElementById('weekly-insight');
+  if(!el)return;
+  const entries=getRecentEntries(7);
+  const totalXp=entries.reduce((sum,e)=>sum+(e.xp||0),0);
+  const totalDue=entries.reduce((sum,e)=>sum+(e.total||0),0);
+  const totalDone=entries.reduce((sum,e)=>sum+(e.completed||0),0);
+  const completionRate=totalDue?Math.round((totalDone/totalDue)*100):0;
+  const perfect=entries.filter(e=>(e.completionPct||0)>=100).length;
+  const catAgg={str:{done:0,total:0},int:{done:0,total:0},vit:{done:0,total:0},con:{done:0,total:0},dis:{done:0,total:0}};
+  const missedCounts={};
+  entries.forEach(entry=>{
+    const catStats=entry.catStats||{};
+    Object.keys(catAgg).forEach(cat=>{
+      const src=catStats[cat]||{};
+      catAgg[cat].done+=(src.done||0);
+      catAgg[cat].total+=(src.total||0);
+    });
+    (entry.missedHabits||[]).forEach(name=>{missedCounts[name]=(missedCounts[name]||0)+1;});
+  });
+  const statRows=[
+    {cat:'str',points:xpToPoints(S.stats.strXp||0)},
+    {cat:'int',points:xpToPoints(S.stats.intXp||0)},
+    {cat:'vit',points:xpToPoints(S.stats.vitXp||0)},
+    {cat:'con',points:xpToPoints(S.stats.conXp||0)},
+    {cat:'dis',points:xpToPoints(S.stats.disXp||0)}
+  ];
+  const strongest=statRows.length?[...statRows].sort((a,b)=>b.points-a.points)[0]:null;
+  const weakest=statRows.length?[...statRows].sort((a,b)=>a.points-b.points)[0]:null;
+  const missedTop=Object.entries(missedCounts).sort((a,b)=>b[1]-a[1])[0];
+  const strongestMeta=strongest?getStatMeta(strongest.cat):null;
+  const weakestMeta=weakest?getStatMeta(weakest.cat):null;
+  const radarLegend=[
+    ['str','STR',xpToPoints(S.stats.strXp||0),getStatIdentityLabel('str')],
+    ['int','INT',xpToPoints(S.stats.intXp||0),getStatIdentityLabel('int')],
+    ['vit','VIT',xpToPoints(S.stats.vitXp||0),getStatIdentityLabel('vit')],
+    ['con','CON',xpToPoints(S.stats.conXp||0),getStatIdentityLabel('con')],
+    ['dis','DIS',xpToPoints(S.stats.disXp||0),getStatIdentityLabel('dis')]
+  ].map(([key,name,val,sub])=>{
+    const meta=getStatMeta(key);
+    return `<div class="radar-item"><div><div class="radar-name" style="color:${meta.col}">${name}</div><div class="radar-cap">${sub}</div></div><div class="radar-val" style="color:${meta.col}">${val}</div></div>`;
+  }).join('');
+  el.innerHTML=`
+    <div class="insight-wrap">
+      <div class="radar-card">
+        <div class="radar-head">
+          <div class="radar-title">STAT BALANCE</div>
+          <div class="radar-sub">current build across all five cores</div>
+        </div>
+        <div class="radar-wrap">
+          ${getRadarChartSvg()}
+          <div class="radar-legend">${radarLegend}</div>
+        </div>
+      </div>
+      <div class="insight-grid">
+        <div class="insight-box"><div class="insight-k">TOTAL XP THIS WEEK</div><div class="insight-v">${totalXp}</div><div class="insight-sub">sum of the last 7 day records</div></div>
+        <div class="insight-box"><div class="insight-k">COMPLETION RATE</div><div class="insight-v">${completionRate}%</div><div class="insight-sub">${totalDone}/${totalDue||0} due habits cleared</div></div>
+        <div class="insight-box"><div class="insight-k">STRONGEST CATEGORY</div><div class="insight-v">${strongestMeta?strongestMeta.nm:'NONE'}</div><div class="insight-sub">${strongest?strongest.pct:0}% weekly clear rate</div></div>
+        <div class="insight-box"><div class="insight-k">WEAKEST CATEGORY</div><div class="insight-v">${weakestMeta?weakestMeta.nm:'NONE'}</div><div class="insight-sub">${weakest?weakest.pct:0}% weekly clear rate</div></div>
+        <div class="insight-box"><div class="insight-k">MOST MISSED HABIT</div><div class="insight-v">${missedTop?missedTop[1]+'x':'0x'}</div><div class="insight-sub">${missedTop?missedTop[0]:'No repeated misses this week'}</div></div>
+        <div class="insight-box"><div class="insight-k">PERFECT DAYS THIS WEEK</div><div class="insight-v">${perfect}</div><div class="insight-sub">full clears across the last 7 days</div></div>
+      </div>
+    </div>`;
+}
+function sw(tab){
+  const order=['quests','insight','bonus','boss','ach','profile'];
+  document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.toggle('on',order[i]===tab);});
+  document.querySelectorAll('.tsec').forEach(s=>s.classList.remove('on'));
+  const target=document.getElementById('tab-'+tab);if(target)target.classList.add('on');
+  if(tab==='quests'){renderQuests();renderWeekStrip();renderTopDuePanel();renderDailySummary();renderDayNote();renderHistoryCalendar();}
+  if(tab==='insight')renderWeeklyInsight();
+  if(tab==='ach')renderAch();
+  if(tab==='boss')renderBoss();
+  if(tab==='bonus')renderBonus();
+  if(tab==='profile'){renderProfile();if(typeof updateBackupSize==='function')updateBackupSize();}
+  // Sync bottom nav
+  document.querySelectorAll('.bnav-item').forEach(el=>el.classList.remove('on'));
+  const bnav=document.getElementById('bnav-'+tab);if(bnav)bnav.classList.add('on');
+}
+function setupInsightTab(){
+  ensureInsightStyles();
+  const tabs=document.querySelector('.tabs');
+  if(tabs){
+    let insightTab=[...tabs.querySelectorAll('.tab')].find(t=>t.getAttribute('onclick')==="sw('insight')");
+    const questTab=[...tabs.querySelectorAll('.tab')].find(t=>t.getAttribute('onclick')==="sw('quests')");
+    if(!insightTab){
+      insightTab=document.createElement('div');
+      insightTab.className='tab';
+      insightTab.setAttribute('onclick',"sw('insight')");
+    }
+    insightTab.textContent='INSIGHT';
+    if(questTab){
+      tabs.insertBefore(insightTab,questTab.nextSibling);
+    }else if(!insightTab.parentNode){
+      tabs.appendChild(insightTab);
+    }
+  }
+  let section=document.getElementById('tab-insight');
+  if(!section){
+    section=document.createElement('div');
+    section.className='tsec';
+    section.id='tab-insight';
+    section.innerHTML='<div class="dash-card"><div class="dash-title">WEEKLY INSIGHT</div><div id="weekly-insight-panel"></div></div>';
+  }
+  const questsSection=document.getElementById('tab-quests');
+  if(questsSection&&questsSection.parentNode&&questsSection.nextSibling!==section){
+    questsSection.parentNode.insertBefore(section,questsSection.nextSibling);
+  }
+}
+function ensureInsightStyles(){
+  const existing=document.getElementById('insight-radar-styles');
+  if(existing)existing.remove();
+  const style=document.createElement('style');
+  style.id='insight-radar-styles';
+  style.textContent=`
+    .insight-wrap{display:grid;gap:16px}
+    .insight-hero{position:relative;overflow:hidden;border:1px solid rgba(96,184,255,.18);border-radius:22px;padding:18px;background:
+      radial-gradient(circle at top left,rgba(90,138,255,.16),transparent 34%),
+      radial-gradient(circle at top right,rgba(132,201,255,.12),transparent 28%),
+      linear-gradient(180deg,rgba(9,17,36,.98),rgba(5,10,22,.98));box-shadow:0 18px 34px rgba(2,8,22,.34),inset 0 0 0 1px rgba(92,126,216,.08)}
+    .insight-hero::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(124,176,255,.14),transparent);transform:translateX(-100%);animation:insightSweep 7s linear infinite;pointer-events:none}
+    .insight-hero::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#5f89ff,#8fd8ff,#5f89ff,transparent)}
+    .insight-hero-head{position:relative;z-index:1;display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:14px}
+    .insight-hero-title{font:900 14px Orbitron,system-ui;color:#edf5ff;letter-spacing:.26em;text-shadow:0 0 18px rgba(96,184,255,.18)}
+    .insight-hero-sub{font:700 11px Rajdhani,system-ui;color:#90add8;letter-spacing:.08em;max-width:420px}
+    .insight-core-tag{padding:4px 8px;border-radius:999px;border:1px solid rgba(96,184,255,.2);background:rgba(11,22,46,.64);font:800 9px Orbitron,system-ui;color:#cfe2ff;letter-spacing:.16em;white-space:nowrap}
+    .radar-card{position:relative;z-index:1;overflow:hidden;border:1px solid rgba(108,152,255,.16);border-radius:18px;background:
+      radial-gradient(circle at center,rgba(112,146,255,.08),transparent 55%),
+      linear-gradient(180deg,rgba(11,22,44,.8),rgba(6,12,24,.92));padding:14px}
+    .radar-card::before{content:'';position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(132,171,255,.06);pointer-events:none}
+    .radar-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:12px}
+    .radar-title{font:800 12px Orbitron,system-ui;color:#e4efff;letter-spacing:.22em}
+    .radar-sub{font:700 11px Rajdhani,system-ui;color:#7fa2dc;letter-spacing:.08em}
+    .radar-wrap{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(200px,.88fr);gap:14px;align-items:center}
+    .radar-svg{width:100%;height:auto;display:block;filter:drop-shadow(0 10px 22px rgba(24,44,96,.22))}
+    .radar-legend{display:grid;gap:8px}
+    .radar-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:linear-gradient(180deg,rgba(12,24,48,.78),rgba(8,14,28,.9));border:1px solid rgba(96,184,255,.11);box-shadow:inset 0 0 0 1px rgba(255,255,255,.02)}
+    .radar-item:hover{border-color:rgba(120,176,255,.2)}
+    .radar-name{font:800 11px Orbitron,system-ui;color:#e1edff;letter-spacing:.16em}
+    .radar-val{font:900 17px Orbitron,system-ui;color:#f5f9ff;text-shadow:0 0 16px rgba(106,158,255,.14)}
+    .radar-cap{font:700 10px Rajdhani,system-ui;color:#7898cc;letter-spacing:.08em}
+    .radar-scale{font:700 10px Rajdhani,system-ui;fill:#7d97c6;letter-spacing:.08em}
+    .insight-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .insight-box{position:relative;overflow:hidden;border-radius:16px;padding:12px 12px 11px;background:
+      linear-gradient(180deg,rgba(12,24,48,.84),rgba(7,12,24,.94));border:1px solid rgba(90,128,198,.13);box-shadow:0 10px 20px rgba(2,8,20,.18),inset 0 0 0 1px rgba(255,255,255,.018)}
+    .insight-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,rgba(95,137,255,.2),rgba(143,216,255,.74),rgba(95,137,255,.2))}
+    .insight-box.metric-xp::before{background:linear-gradient(90deg,#4e7dff,#76c8ff,#9ae4ff)}
+    .insight-box.metric-rate::before{background:linear-gradient(90deg,#2bd88f,#5ef1be,#9effdd)}
+    .insight-box.metric-strong::before{background:linear-gradient(90deg,#aa60ff,#d1a3ff,#f3ddff)}
+    .insight-box.metric-weak::before{background:linear-gradient(90deg,#5c78b9,#81a1ec,#c8d6ff)}
+    .insight-box.metric-miss::before{background:linear-gradient(90deg,#ff8e5b,#ffc36c,#ffe8aa)}
+    .insight-box.metric-perfect::before{background:linear-gradient(90deg,#ffd76b,#fff0a8,#fff7cf)}
+    .insight-k{font:800 10px Orbitron,system-ui;color:#87a7d7;letter-spacing:.18em;margin-bottom:7px}
+    .insight-v{font:900 24px Orbitron,system-ui;color:#f2f7ff;letter-spacing:.03em;line-height:1;text-shadow:0 0 18px rgba(96,184,255,.12)}
+    .insight-sub{margin-top:6px;font:700 10px Rajdhani,system-ui;color:#7f98bc;letter-spacing:.05em;line-height:1.35}
+    @keyframes insightSweep{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+    @media (max-width:760px){
+      .radar-wrap{grid-template-columns:1fr}
+      .insight-grid{grid-template-columns:1fr}
+      .insight-hero-head{flex-direction:column}
+    }
+  `;
+  document.head.appendChild(style);
+}
+function renderWeeklyInsight(){
+  const el=document.getElementById('weekly-insight-panel')||document.getElementById('weekly-insight');
+  if(!el)return;
+  const entries=getRecentEntries(7);
+  const totalXp=entries.reduce((sum,e)=>sum+(e.xp||0),0);
+  const totalDue=entries.reduce((sum,e)=>sum+(e.total||0),0);
+  const totalDone=entries.reduce((sum,e)=>sum+(e.completed||0),0);
+  const completionRate=totalDue?Math.round((totalDone/totalDue)*100):0;
+  const perfect=entries.filter(e=>(e.completionPct||0)>=100).length;
+  const catAgg={str:{done:0,total:0},int:{done:0,total:0},vit:{done:0,total:0},con:{done:0,total:0},dis:{done:0,total:0}};
+  const missedCounts={};
+  entries.forEach(entry=>{
+    const catStats=entry.catStats||{};
+    Object.keys(catAgg).forEach(cat=>{
+      const src=catStats[cat]||{};
+      catAgg[cat].done+=(src.done||0);
+      catAgg[cat].total+=(src.total||0);
+    });
+    (entry.missedHabits||[]).forEach(name=>{missedCounts[name]=(missedCounts[name]||0)+1;});
+  });
+  const statRows=[
+    {cat:'str',points:xpToPoints(S.stats.strXp||0)},
+    {cat:'int',points:xpToPoints(S.stats.intXp||0)},
+    {cat:'vit',points:xpToPoints(S.stats.vitXp||0)},
+    {cat:'con',points:xpToPoints(S.stats.conXp||0)},
+    {cat:'dis',points:xpToPoints(S.stats.disXp||0)}
+  ];
+  const strongest=statRows.length?[...statRows].sort((a,b)=>b.points-a.points)[0]:null;
+  const weakest=statRows.length?[...statRows].sort((a,b)=>a.points-b.points)[0]:null;
+  const missedTop=Object.entries(missedCounts).sort((a,b)=>b[1]-a[1])[0];
+  const strongestMeta=strongest?getStatMeta(strongest.cat):null;
+  const weakestMeta=weakest?getStatMeta(weakest.cat):null;
+  const radarLegend=[
+    ['STR',xpToPoints(S.stats.strXp||0),getStatIdentityLabel('str')],
+    ['INT',xpToPoints(S.stats.intXp||0),getStatIdentityLabel('int')],
+    ['VIT',xpToPoints(S.stats.vitXp||0),getStatIdentityLabel('vit')],
+    ['CON',xpToPoints(S.stats.conXp||0),getStatIdentityLabel('con')],
+    ['DIS',xpToPoints(S.stats.disXp||0),getStatIdentityLabel('dis')]
+  ].map(([name,val,sub])=>`<div class="radar-item"><div><div class="radar-name">${name}</div><div class="radar-cap">${sub}</div></div><div class="radar-val">${val}</div></div>`).join('');
+  el.innerHTML=`
+    <div class="insight-wrap">
+      <div class="insight-hero">
+        <div class="insight-hero-head">
+          <div>
+            <div class="insight-hero-title">WEEKLY INSIGHT</div>
+            <div class="insight-hero-sub">A shadow-read of your current build. The radar shows where your system is dense, balanced, or falling behind.</div>
+          </div>
+          <div class="insight-core-tag">HUNTER ANALYSIS</div>
+        </div>
+        <div class="radar-card">
+          <div class="radar-head">
+            <div class="radar-title">STAT BALANCE</div>
+            <div class="radar-sub">scaled against a full 100-point stat cap</div>
+          </div>
+          <div class="radar-wrap">
+            ${getRadarChartSvg()}
+            <div class="radar-legend">${radarLegend}</div>
+          </div>
+        </div>
+      </div>
+      <div class="insight-grid">
+        <div class="insight-box metric-xp"><div class="insight-k">TOTAL XP THIS WEEK</div><div class="insight-v">${totalXp}</div><div class="insight-sub">sum of the last 7 day records</div></div>
+        <div class="insight-box metric-rate"><div class="insight-k">COMPLETION RATE</div><div class="insight-v">${completionRate}%</div><div class="insight-sub">${totalDone}/${totalDue||0} due habits cleared</div></div>
+        <div class="insight-box metric-strong"><div class="insight-k">STRONGEST CATEGORY</div><div class="insight-v">${strongestMeta?strongestMeta.nm:'NONE'}</div><div class="insight-sub">${strongest?strongest.points:0}/100 current stat strength</div></div>
+        <div class="insight-box metric-weak"><div class="insight-k">WEAKEST CATEGORY</div><div class="insight-v">${weakestMeta?weakestMeta.nm:'NONE'}</div><div class="insight-sub">${weakest?weakest.points:0}/100 current stat strength</div></div>
+        <div class="insight-box metric-miss"><div class="insight-k">MOST MISSED HABIT</div><div class="insight-v">${missedTop?missedTop[1]+'x':'0x'}</div><div class="insight-sub">${missedTop?missedTop[0]:'No repeated misses this week'}</div></div>
+        <div class="insight-box metric-perfect"><div class="insight-k">PERFECT DAYS THIS WEEK</div><div class="insight-v">${perfect}</div><div class="insight-sub">full clears across the last 7 days</div></div>
+      </div>
+    </div>`;
+}
+let _appShellStabilized=false;
+function stabilizeAppShell(){
+  ensureInsightStyles();
+  const validFocus=['auto','morning','day','night','anytime','all'];
+  if(!validFocus.includes(_focusSlotFilter))_focusSlotFilter='auto';
+  if(_appShellStabilized)return;
+  _appShellStabilized=true;
+
+  const logTab=document.querySelector('[onclick="sw(\'log\')"]');
+  if(logTab)logTab.remove();
+  const logSection=document.getElementById('tab-log');
+  if(logSection)logSection.remove();
+
+  const addPriority=document.getElementById('fpriority');
+  if(addPriority)addPriority.style.display='none';
+  const editPriority=document.getElementById('epriority');
+  if(editPriority)editPriority.style.display='none';
+
+  const tabs=document.querySelector('.tabs');
+  if(tabs){
+    const desired=['quests','insight','bonus','boss','ach','profile'];
+    const map={};
+    [...tabs.querySelectorAll('.tab')].forEach(tab=>{
+      const onclick=tab.getAttribute('onclick')||'';
+      const match=onclick.match(/sw\('([^']+)'\)/);
+      if(match&&!map[match[1]])map[match[1]]=tab;
+      else if(match&&map[match[1]])tab.remove();
+    });
+    desired.forEach(name=>{
+      if(map[name]){
+        if(name==='insight')map[name].textContent='INSIGHT';
+        tabs.appendChild(map[name]);
+      }
+    });
+  }
+
+  const questsSection=document.getElementById('tab-quests');
+  const insightSection=document.getElementById('tab-insight');
+  if(questsSection&&insightSection&&questsSection.parentNode&&questsSection.nextSibling!==insightSection){
+    questsSection.parentNode.insertBefore(insightSection,questsSection.nextSibling);
+  }
+}
+function safeRenderSection(fn){
+  try{fn();}
+  catch(err){console.error(err);}
+}
+function render(){
+  stabilizeAppShell();
+  safeRenderSection(updateCard);
+  safeRenderSection(renderProfile);
+  safeRenderSection(renderStats);
+  safeRenderSection(renderDailySummary);
+  safeRenderSection(renderDayNote);
+  safeRenderSection(renderHistoryCalendar);
+  if(document.getElementById('tab-insight')&&document.getElementById('tab-insight').classList.contains('on'))safeRenderSection(renderWeeklyInsight);
+  safeRenderSection(renderWeekStrip);
+  safeRenderSection(renderTopDuePanel);
+  safeRenderSection(renderTodayFocus);
+  safeRenderSection(renderQuests);
+  if(document.getElementById('tab-bonus')&&document.getElementById('tab-bonus').classList.contains('on'))safeRenderSection(renderBonus);
+  if(document.getElementById('tab-boss')&&document.getElementById('tab-boss').classList.contains('on'))safeRenderSection(renderBoss);
+  if(document.getElementById('tab-ach')&&document.getElementById('tab-ach').classList.contains('on'))safeRenderSection(renderAch);
+}
+
+setupDailyNavigation();
+setupInsightTab();
+load();
+
+
+
+// ── HARD RESET ─────────────────────────────────────────────────────────
+function hardReset() {
+  // Open the in-app reset modal — no confirm/prompt (blocked in PWA standalone mode)
+  const input = document.getElementById('reset-confirm-input');
+  if (input) input.value = '';
+  document.getElementById('reset-modal').classList.add('show');
+  setTimeout(() => { if (input) input.focus(); }, 100);
+}
+
+function closeResetModal() {
+  document.getElementById('reset-modal').classList.remove('show');
+  const input = document.getElementById('reset-confirm-input');
+  if (input) input.value = '';
+}
+
+function confirmHardReset() {
+  const input = document.getElementById('reset-confirm-input');
+  const typed = (input ? input.value : '').trim().toUpperCase();
+  if (typed !== 'RESET') {
+    // Shake the input to show it's wrong
+    if (input) {
+      input.classList.remove('shake');
+      void input.offsetWidth; // reflow to restart animation
+      input.classList.add('shake');
+      input.style.borderColor = 'rgba(255,50,80,.8)';
+      setTimeout(() => { input.style.borderColor = ''; input.classList.remove('shake'); }, 400);
+    }
+    return;
+  }
+  // Wipe everything — reset state in-memory directly (no reload needed, avoids iframe localStorage issues)
+  localStorage.removeItem('slv5');
+  S = {xp:0,totalXp:0,level:1,stats:{strXp:0,intXp:0,vitXp:0,conXp:0,disXp:0},statLastActive:{str:'',int:'',vit:'',con:'',dis:''},quests:[],log:[],bonusQuest:null,bonusDate:'',bonusDone:false,bossWeek:'',bossHp:0,bossMaxHp:0,bossDone:false,bossName:'',bossDesc:'',bossReward:0,achievements:{},totalBonusDone:0,lastReset:'',todayXp:0,history:[],dailyNotes:{},profile:{name:'PLAYER',avatar:''},initialized:true};
+  save();
+  closeResetModal();
+  notify('System wiped — starting fresh.');
+  checkDayReset(); checkBossWeek(); checkBonusDay(); applyDecay(); render();
+}
+
+
+// ── XP GAIN POPUP ──────────────────────────────────────────────────────
+let _xpPopupTimer = null;
+function showXpPopup(questName, xpGained, stat, tier, isUndo) {
+  if (isUndo) {
+    // For undo just show the small notif, no popup
+    return;
+  }
+  const meta = getStatMeta(stat);
+  const tierCols = {D:'#4a9a4a',C:'#4a70ff',B:'#aa60ff',A:'#ffaa20',S:'#ff4060'};
+  const col = tierCols[tier||'D'] || '#5f8fff';
+  const el = document.getElementById('xp-popup');
+  document.getElementById('xpp-tier').textContent = (tier||'D') + '-RANK';
+  document.getElementById('xpp-tier').style.cssText = `color:${col};border-color:${col};background:${col}18`;
+  document.getElementById('xpp-name').textContent = questName;
+  document.getElementById('xpp-xp').textContent = '+' + xpGained;
+  document.getElementById('xpp-xp').style.color = col;
+  document.getElementById('xpp-xp').style.textShadow = `0 0 28px ${col}88`;
+  document.getElementById('xpp-stat').textContent = meta.ico + ' ' + meta.nm + ' stat increased';
+  document.getElementById('xpp-undo').textContent = 'Tap quest again to undo';
+  // Clear any existing timer
+  if (_xpPopupTimer) { clearTimeout(_xpPopupTimer); _xpPopupTimer = null; }
+  el.classList.remove('hide');
+  el.classList.add('show');
+  _xpPopupTimer = setTimeout(() => {
+    el.classList.add('hide');
+    setTimeout(() => { el.classList.remove('show','hide'); }, 300);
+  }, 2200);
+}
+
+// ── PWA: SERVICE WORKER ────────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').then(reg => {
+      console.log('SW registered:', reg.scope);
+    }).catch(err => console.log('SW error:', err));
+  });
+}
+
+// ── PWA: INSTALL PROMPT ────────────────────────────────────────────────
+let _deferredInstall = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  _deferredInstall = e;
+  // Show install banner if not already installed
+  setTimeout(() => {
+    if (!window.matchMedia('(display-mode: standalone)').matches) {
+      document.getElementById('install-banner').classList.add('show');
+    }
+  }, 3000);
+});
+document.getElementById('install-btn').addEventListener('click', async () => {
+  if (!_deferredInstall) return;
+  _deferredInstall.prompt();
+  const result = await _deferredInstall.userChoice;
+  _deferredInstall = null;
+  document.getElementById('install-banner').classList.remove('show');
+});
+window.addEventListener('appinstalled', () => {
+  document.getElementById('install-banner').classList.remove('show');
+  notify('System installed — you can now launch from your home screen');
+});
+
+// ── BOTTOM NAV ─────────────────────────────────────────────────────────
+function bnavSw(tab) {
+  document.querySelectorAll('.bnav-item').forEach(el => el.classList.remove('on'));
+  const btn = document.getElementById('bnav-' + tab);
+  if (btn) btn.classList.add('on');
+  sw(tab);
+}
+
+// Sync bottom nav whenever sw() is called — patch via prototype trick
+const _swOrig = window.sw;
+window._syncBnav = function(tab) {
+  document.querySelectorAll('.bnav-item').forEach(el => el.classList.remove('on'));
+  const btn = document.getElementById('bnav-' + tab);
+  if (btn) btn.classList.add('on');
+  if (tab === 'profile') updateBackupSize();
+};
+
+// ── BACKUP: EXPORT ─────────────────────────────────────────────────────
+function exportBackup() {
+  try {
+    // Always export from live in-memory S, not potentially stale localStorage
+    save(); // flush latest state first
+    const data = JSON.stringify(S);
+    if (!data) { notify('Nothing to export yet'); return; }
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const date = new Date().toISOString().slice(0, 10);
+    a.href = url;
+    a.download = `sl-system-backup-${date}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    notify('Backup exported — ' + S.quests.length + ' quests saved');
+  } catch(e) {
+    notify('Export failed: ' + e.message);
+  }
+}
+
+// ── BACKUP: IMPORT ─────────────────────────────────────────────────────
+function importBackup(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = e.target.result;
+      const parsed = JSON.parse(data);
+      // Basic validation
+      if (typeof parsed !== 'object' || !parsed.quests || !Array.isArray(parsed.quests)) {
+        notify('Invalid backup file — not a valid save');
+        return;
+      }
+      // Apply directly into S without reload (avoids iframe localStorage race condition)
+      S = parsed;
+      // Ensure all required fields exist
+      if (!S.achievements) S.achievements = {};
+      if (!S.statLastActive) S.statLastActive = {str:'',int:'',vit:'',con:'',dis:''};
+      if (!Array.isArray(S.history)) S.history = [];
+      if (!S.dailyNotes || typeof S.dailyNotes !== 'object') S.dailyNotes = {};
+      if (typeof S.todayXp !== 'number') S.todayXp = 0;
+      if (!S.profile) S.profile = {name:'PLAYER', avatar:''};
+      if (!S.profile.name) S.profile.name = 'PLAYER';
+      if (typeof S.profile.avatar !== 'string') S.profile.avatar = '';
+      if (!S.stats) S.stats = {strXp:0,intXp:0,vitXp:0,conXp:0,disXp:0};
+      if (Array.isArray(S.quests)) S.quests.forEach((q,i) => { if (typeof q.order !== 'number') q.order = i+1; });
+      if (!S.dayStates || typeof S.dayStates !== 'object') S.dayStates = {};
+      // Mark as initialized so seeding never runs
+      S.initialized = true;
+      // Write to localStorage and update UI
+      save();
+      checkDayReset(); checkBossWeek(); checkBonusDay(); applyDecay(); render();
+      notify('Backup restored — ' + S.quests.length + ' quests, player: ' + (S.profile.name||'PLAYER'));
+    } catch(err) {
+      notify('Import failed: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+// ── BACKUP: SIZE INDICATOR ─────────────────────────────────────────────
+function updateBackupSize() {
+  try {
+    const data = localStorage.getItem('slv5') || '';
+    const kb = (new Blob([data]).size / 1024).toFixed(1);
+    const el = document.getElementById('backup-size-label');
+    if (el) el.textContent = `Save size: ${kb} KB · localStorage is safe unless you clear browser data`;
+  } catch(e) {}
+}
+
+// ── KEEP SCREEN AWAKE (if supported) ──────────────────────────────────
+let _wakeLock = null;
+async function requestWakeLock() {
+  if ('wakeLock' in navigator) {
+    try {
+      _wakeLock = await navigator.wakeLock.request('screen');
+    } catch(e) {}
+  }
+}
+document.addEventListener('visibilitychange', async () => {
+  if (document.visibilityState === 'visible') requestWakeLock();
+});
+requestWakeLock();
+
+// Update backup size on load
+window.addEventListener('load', () => setTimeout(updateBackupSize, 500));
+
+</script>
+</body>
+</html>

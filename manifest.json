@@ -1,0 +1,68 @@
+{
+  "name": "Solo Leveling System",
+  "short_name": "SL System",
+  "description": "Personal RPG habit tracker - awaken your potential",
+  "id": "./index.html",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#050911",
+  "theme_color": "#050911",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Daily Briefing",
+      "short_name": "Briefing",
+      "description": "Open today's daily quest briefing",
+      "url": "./index.html?open=daily_briefing",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Weekly Raid",
+      "short_name": "Raid",
+      "description": "Open the weekly boss raid",
+      "url": "./index.html?open=boss",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Remaining Quests",
+      "short_name": "Remaining",
+      "description": "Open today's remaining quests",
+      "url": "./index.html?open=remaining",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "categories": ["lifestyle", "health", "productivity"]
+}
